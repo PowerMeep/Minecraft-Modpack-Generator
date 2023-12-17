@@ -30,13 +30,7 @@ def generate(players=None) -> ModPack:
 
 
 def main():
-    modpack = generate([
-        'ben',
-        'celeste',
-        'lindsey',
-        'joey',
-        'alex'
-    ])
+    modpack = generate([])
     print(json.dumps(
         modpack.to_json(),
         # sort_keys=True,
@@ -48,4 +42,5 @@ def main():
 if __name__ == '__main__':
     # TODO: launch args
     #  - players are required beforehand for the hitman stuff
+    #  - ability to specify other stuff
     main()
