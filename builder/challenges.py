@@ -36,7 +36,7 @@ CHALLENGE_100_DAY = Challenge(
         SQ_TOUGH_AS_NAILS,
         SQ_SUNBURN,
         SQ_ALL_FOR_ONE,
-        SQ_INSOMNIA
+        SQ_INSOMNIA  # note that this effectively doubles the time required to reach 100 days
     ]
 )
 

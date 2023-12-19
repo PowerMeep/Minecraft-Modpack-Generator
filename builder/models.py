@@ -8,6 +8,7 @@ def dict_to_x_list(d) -> list:
 class Mod:
     def __init__(self,
                  name,
+                 configs=None,
                  forge=False,
                  fabric=False,
                  v112=False,
@@ -16,6 +17,7 @@ class Mod:
                  v119=False,
                  v120=False):
         self.name = name
+        self.configs = configs or []
         self.loaders = {
             'Forge': forge,
             'Fabric': fabric
@@ -27,6 +29,15 @@ class Mod:
             '1.19': v119,
             '1.20': v120,
         }
+
+    def get_alt_configuration(self, configs):
+        mod = Mod(
+            name=self.name,
+            configs=configs
+        )
+        mod.loaders = self.loaders
+        mod.versions = self.versions
+        return mod
 
     def __str__(self):
         return '{:>38}|[{}]|[{}]'.format(
