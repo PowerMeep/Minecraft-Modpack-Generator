@@ -154,7 +154,7 @@ MOD_SCULK_HORDE = Mod(
 MOD_STRATOSPHERICAL = Mod(
     name='Stratospherical Expansion',
     forge=True,
-    v119=True,
+    v118=True,
     v120=True
 )
 
