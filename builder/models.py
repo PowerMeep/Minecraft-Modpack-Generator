@@ -17,6 +17,10 @@ class Mod:
                  v119=False,
                  v120=False):
         self.name = name
+        # url
+        # project id
+        # file id
+        # required (enabled?)
         self.configs = configs or []
         self.loaders = {
             'Forge': forge,

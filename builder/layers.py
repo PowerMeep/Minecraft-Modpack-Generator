@@ -101,7 +101,8 @@ LAYER_HIGH_SEAS = Layer(
     description='A layer focused around the sea.',
     terrain_mod=MOD_CONTINENTS,
     mods=[
-        MOD_VALKYRIEN_SHIPS,
+        MOD_EUREKA_SHIPS,
+        MOD_VALKYRIEN_SKIES,
         # wakes
         # effective
         # physics (sea)
@@ -180,6 +181,7 @@ LAYER_STRATOSPHERICAL = Layer(
     terrain_mod=MOD_STRATOSPHERICAL,
     mods=[
         MOD_GRAPPLING_HOOKS,
+        MOD_EUREKA_SHIPS,
         MOD_VALKYRIEN_SKIES
     ]
 )
@@ -265,6 +267,7 @@ LAYER_RESOURCEFUL = Layer(
         MOD_BACKPACKS,
         MOD_TINKERS,
         MOD_CREATE,
+        # Mystical Agriculture?
         MOD_STORAGE_DRAWERS,
         MOD_CURIOS
     ]
