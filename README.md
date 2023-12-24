@@ -9,7 +9,7 @@ This version is a very early iteration. It's basically a proof of concept.
 ### General TODO:
 - [ ] Ability to look up mod metadata from a url
 - [ ] Separation of code and configuration data
-- [ ] Use logging instead of print statements
+- [x] Use logging instead of print statements
 
 ### Milestone 1
 **The builder consistently assembles sensible configurations.**

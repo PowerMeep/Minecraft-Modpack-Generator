@@ -1,7 +1,14 @@
+import logging
 import json
 
 from challenges import *
 from models import ModPack
+
+logging.basicConfig(
+    format='%(message)s'
+)
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 challenges = {
     CHALLENGE_100_DAY: 50,
@@ -24,14 +31,14 @@ def generate(players=None) -> ModPack:
         weights=list(challenges.values()),
         k=1
     )[0]
-    print(f'Chose challenge "{modpack.challenge.name}"')
+    logger.info(f'Chose challenge "{modpack.challenge.name}"')
     modpack.collapse(players)
     return modpack
 
 
 def main():
     modpack = generate([])
-    print(json.dumps(
+    logger.info(json.dumps(
         modpack.to_json(),
         # sort_keys=True,
         indent=4,

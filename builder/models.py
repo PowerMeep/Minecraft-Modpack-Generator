@@ -1,3 +1,7 @@
+import logging
+
+logger = logging.getLogger()
+
 def dict_to_x_list(d) -> list:
     out = []
     for v in d.values():
@@ -73,7 +77,7 @@ class Layer:
             mod = choice(mod)[0]
         from mods import MOD_VANILLA
         if mod not in self.mods and mod != MOD_VANILLA:
-            print(f'  > Adding mod: {mod.name}')
+            logger.debug(f'  > Adding mod: {mod.name}')
             self.mods.append(mod)
 
     def update(self, other_layer):
@@ -82,7 +86,7 @@ class Layer:
         from layers import LAYER_VANILLA
         if other_layer == LAYER_VANILLA:
             return
-        print(f'> Adding layer: {other_layer.name}')
+        logger.info(f'> Adding layer: {other_layer.name}')
         if other_layer.terrain_mod and not self.terrain_mod:
             self.terrain_mod = other_layer.terrain_mod
         if other_layer.village_mod and not self.village_mod:
