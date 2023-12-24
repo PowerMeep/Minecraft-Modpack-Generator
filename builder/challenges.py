@@ -51,7 +51,7 @@ CHALLENGE_ONE_PERCENT = Challenge(
         LAYER_ESSENTIALS,
         [
             LAYER_ICE_AND_FIRE,
-            # LAYER_STRATOSPHERICAL,  # Does not generate terrain below 0, that means no diamonds?
+            LAYER_STRATOSPHERICAL,
             LAYER_AETHER,
             LAYER_WINTER_WONDERLAND,
             LAYER_RL,
