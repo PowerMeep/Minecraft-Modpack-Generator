@@ -941,6 +941,16 @@ MOD_RAVEN_COFFEE = Mod(
     v120=True
 )
 
+MOD_MYSTICAL_AGRICULTURE = Mod(
+    name='Mystical Agriculture',
+    forge=True,
+    v112=True,
+    v116=True,
+    v118=True,
+    v119=True,
+    v120=True
+)
+
 # STRUCTURE MODS
 # - yungs mineshafts
 

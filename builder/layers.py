@@ -269,7 +269,7 @@ LAYER_RESOURCEFUL = Layer(
         MOD_BACKPACKS,
         MOD_TINKERS,
         MOD_CREATE,
-        # Mystical Agriculture?
+        MOD_MYSTICAL_AGRICULTURE,
         MOD_STORAGE_DRAWERS,
         MOD_CURIOS
     ]
