@@ -921,6 +921,16 @@ MOD_ARS_NOVEAU = Mod(
     v120=True
 )
 
+MOD_TORCHMASTER = Mod(
+    name='Torchmaster',
+    forge=True,
+    v112=True,
+    v116=True,
+    v118=True,
+    v119=True,
+    v120=True
+)
+
 # STRUCTURE MODS
 # - yungs mineshafts
 
