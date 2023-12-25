@@ -286,6 +286,7 @@ MOD_BYG = Mod(
 )
 
 MOD_PRIMAL_WINTER = Mod(
+    # Override config to allow setting the weather
     name='Primal Winter',
     forge=True,
     fabric=True,
@@ -931,19 +932,23 @@ MOD_TORCHMASTER = Mod(
     v120=True
 )
 
+MOD_RAVEN_COFFEE = Mod(
+    name='Raven Coffee',
+    forge=True,
+    v116=True,
+    v118=True,
+    v119=True,
+    v120=True
+)
+
 # STRUCTURE MODS
 # - yungs mineshafts
 
 # OTHER CRAP
 # - solid mobs
 # - prehistoric fauna
-# - raven coffee
 # - Thicc mobs (control strength of mobs)
 # - InControl (control spawns)
-
-# Client side
-# - shaders
-# - sound physics
 
 # compats
 # MOD_COMPATS = [

@@ -22,6 +22,7 @@ This version is a very early iteration. It's basically a proof of concept.
 ### Milestone 3
 **The builder is able to assemble zip files that can be imported by clients.**
 - [ ] Ability to choose a loader and version
+- [ ] Some kind of local "registry" to copy already-downloaded files from
 - [ ] Account for mod dependencies (?)
 - [ ] Attach client zip file to Discord message
 

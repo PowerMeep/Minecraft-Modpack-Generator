@@ -170,6 +170,7 @@ LAYER_WINTER_WONDERLAND = Layer(
         MOD_HEAD_IN_CLOUDS,
         MOD_SNOWY_SPIRITS,
         MOD_RARE_ICE,
+        MOD_RAVEN_COFFEE,
         # physics (snow?)
         MOD_SPAWN_ANIMATIONS
     ]
