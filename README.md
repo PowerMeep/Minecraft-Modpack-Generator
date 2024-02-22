@@ -1,6 +1,6 @@
-# Modpack Builder
+# Minecraft Modpack Generator
 
-This project generates goal-oriented modpacks.
+This project generates goal-oriented modpacks for Minecraft.
 
 This version is a very early iteration. It's basically a proof of concept.
 
