@@ -35,7 +35,6 @@ This is needed to generate player-specific configurations.
 - [x] Get loaders and versions from responses
 - [ ] Make the pretty version table
 - [x] Auto choose the configuration that gets the most mods
-- [ ] Generate a CF zip file
 - [x] Cache api calls
 - [ ] Validate JSON files when reading them in
 
@@ -45,15 +44,15 @@ This is needed to generate player-specific configurations.
 ### Milestone 2
 **The builder describes the configuration in the Discord server.**
 - [ ] REST API
-  - [ ] Pass in players
-  - [ ] Per-player sidequests
+  - [x] Pass in players
+  - [x] Per-player sidequests
   - [ ] Pass in configs
 - [ ] Dockerfile
 - [ ] Discord integration
 
 ### Milestone 3
 **The builder is able to assemble zip files that can be imported by clients.**
-- [ ] Ability to choose a loader and version
+- [x] Ability to choose a loader and version
 - [ ] Some kind of local "registry" to copy already-downloaded files from
 - [ ] Account for mod dependencies (?)
 - [ ] Attach client zip file to Discord message

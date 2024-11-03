@@ -51,6 +51,9 @@ class ModPack:
         sq: Sidequest
         for sq in self.challenge.sidequests:
             if bool(random.getrandbits(1)):
+                # Skip any per-player sidequests if we don't have at least 2 players
+                if sq.players_upfront and (not players or len(players) < 2):
+                    continue
                 sq_meta = sq.generate(players)
                 self.meta_by_sidequest[sq] = sq_meta
                 for layer in sq.layers:
@@ -83,7 +86,8 @@ class ModPack:
         sq_objs = []
         for sq, meta in self.meta_by_sidequest.items():
             sq_obj = sq.to_json()
-            sq_obj['meta'] = meta
+            if meta:
+                sq_obj['meta'] = meta
             sq_objs.append(sq_obj)
 
         mod_objs = []

@@ -109,7 +109,7 @@
     "per_player": true,
     "players_upfront": true,
     "hardcore": false,
-    "data": {},
+    "data": null,
     "layers": [
       "Hitman"
     ]
