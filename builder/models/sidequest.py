@@ -9,28 +9,26 @@ class Sidequest:
                  requires_players=False,
                  hardcore=False,
                  layers=None,
-                 generator=None,
                  data=None):
         self.name = name
         self.description = description
         self.requires_players = requires_players
         self.forces_hardcore = hardcore
         self.layers = layers or []
-        self.generator = generator
-        self.data = None
+        self.data = data
 
     def generate(self,
-                 players=None):
-        if self.generator:
-            self.data = self.generator(players)
+                 players: list = None):
+        # TODO: implement
+        #       if per-player, then players are required
+        #       if data is empty, then assign players to each other
+        pass
 
     def to_json(self):
         out = {
             'name': self.name,
             'description': self.description
         }
-        if self.data:
-            out['data'] = self.data
         return out
 
 

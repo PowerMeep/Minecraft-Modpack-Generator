@@ -29,17 +29,27 @@ This is needed to generate player-specific configurations.
 ## Roadmap
 
 ### General TODO:
-- [ ] Ability to look up mod metadata from a url
-- [x] Separation of code and configuration data
-- [x] Use logging instead of print statements
+- [x] Ability to look up mod metadata from a url
+- [ ] Mods w/ multiple configs
+- [ ] Figure out modrinth multiple project scrape
+- [x] Get loaders and versions from responses
+- [ ] Make the pretty version table
+- [x] Auto choose the configuration that gets the most mods
+- [ ] Generate a CF zip file
+- [x] Cache api calls
+- [ ] Validate JSON files when reading them in
 
 ### Milestone 1
 **The builder consistently assembles sensible configurations.**
 
 ### Milestone 2
 **The builder describes the configuration in the Discord server.**
+- [ ] REST API
+  - [ ] Pass in players
+  - [ ] Per-player sidequests
+  - [ ] Pass in configs
+- [ ] Dockerfile
 - [ ] Discord integration
-- [ ] Dockerfile (?)
 
 ### Milestone 3
 **The builder is able to assemble zip files that can be imported by clients.**

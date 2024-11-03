@@ -40,20 +40,93 @@ class Layer:
         for mod in other_layer.mods:
             self.add_mod(mod)
 
-    def get_versions(self):
-        mods_by_version = {}
+    def _batch_fetch_curseforge(self):
+        from models.mod import Mod
+        mods_by_id = {}
         for mod in self.mods:
-            for version in mod.versions:
-                mods_by_version.setdefault(version, []).append(mod)
+            if mod.curseforge_id:
+                mods_by_id[mod.curseforge_id] = mod
+            else:
+                logger.error(f'Mod {mod.name} has no lookup criteria.')
 
-        return [key for key, val in mods_by_version.items() if len(val) == len(self.mods)]
+        from apis import curseforge
+        curseforge_response = curseforge.get_project_info(list(mods_by_id.keys()))
+        if curseforge_response.status_code != 200:
+            logger.error(f'Unable to get metadata from Curseforge: {curseforge_response.status_code}')
+        else:
+            for meta in curseforge_response.json().get('data'):
+                mod: Mod = mods_by_id.get(meta.get('id'))
+                for file in meta.get('latestFiles'):
+                    loaders = []
+                    game_version = None
+                    for version in file.get('gameVersions'):
+                        if version[0].isdigit():
+                            game_version = version
+                        else:
+                            loaders.append(version)
+                    if game_version is None:
+                        logger.error('Could not determine version for file')
+                        continue
 
-    def get_loaders(self):
-        mods_by_loader = {}
+                    if len(loaders) == 0:
+                        loaders = ['Forge']
+
+                    for loader in loaders:
+                        mod.add_source(
+                            loader=loader,
+                            mc_version=game_version,
+                            url=file.get('downloadUrl')
+                        )
+            # import json
+            # print(json.dumps(meta.get('latestFiles'), indent=3))
+
+    def _cache_fetch_curseforge(self):
+        from models.mod import Mod
+        from apis import curseforge
+        mod: Mod
         for mod in self.mods:
-            for loader in mod.loaders:
-                mods_by_loader.setdefault(loader, []).append(mod)
-        return [key for key, val in mods_by_loader.items() if len(val) == len(self.mods)]
+            if mod.curseforge_id is None:
+                logger.error(f'{mod.name} has no Curseforge Id')
+                continue
+
+            if not mod.is_stale():
+                logger.debug(f'{mod.name} sources are recent enough')
+                continue
+            else:
+                logger.warning(f'{mod.name} sources are stale and will be updated')
+
+            response = curseforge.get_files(mod.curseforge_id)
+
+            if response.status_code != 200:
+                logger.error(f'Could not fetch files for {mod.name}: {response.status_code}')
+                continue
+
+            for file in response.json().get('data'):
+                loaders = []
+                game_version = None
+                for version in file.get('gameVersions'):
+                    if version[0].isdigit():
+                        game_version = version
+                    else:
+                        loaders.append(version)
+                if game_version is None:
+                    logger.error('Could not determine version for file')
+                    continue
+
+                if len(loaders) == 0:
+                    loaders = ['Forge']
+
+                for loader in loaders:
+                    mod.add_source(
+                        loader=loader,
+                        mc_version=game_version,
+                        url=file.get('downloadUrl')
+                    )
+            mod.save_sources()
+
+    def fetch_metadata(self):
+        # self._batch_fetch_curseforge()
+        self._cache_fetch_curseforge()
 
 
 layers_by_name = {

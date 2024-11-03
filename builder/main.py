@@ -1,7 +1,9 @@
 import json
 import logging
+from random import choices
 
 from builder.models.modpack import ModPack
+from models.challenge import weights_by_challenge
 
 
 logging.basicConfig(
@@ -12,9 +14,6 @@ logger.setLevel(logging.INFO)
 
 
 def generate(players=None) -> ModPack:
-    from random import choices
-    from models.challenge import weights_by_challenge
-
     modpack = ModPack()
     modpack.challenge = choices(
         population=list(weights_by_challenge.keys()),
@@ -40,7 +39,6 @@ def main():
     modpack = generate([])
     logger.info(json.dumps(
         modpack.to_json(),
-        sort_keys=True,
         indent=4,
         separators=(',', ': ')
     ))

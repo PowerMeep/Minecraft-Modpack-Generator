@@ -134,3 +134,6 @@ data/
 
 # Local build script
 build.sh
+
+# cache database
+mod_cache.db
