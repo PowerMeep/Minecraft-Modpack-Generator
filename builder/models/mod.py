@@ -13,6 +13,8 @@ stale_time = os.environ.get('CACHE_STALE_TIME')
 if stale_time is not None:
     stale_time = parse(stale_time, as_timedelta=True)
 
+json_path = 'configs/mods.json'
+
 db_name = 'mod_cache.db'
 table_timestamps = 'timestamps'
 table_sources = 'sources'
@@ -132,7 +134,7 @@ def from_json(obj: dict):
 
 def load_mods():
     from models.load_util import load_named_items
-    load_named_items('configs/mods.json', from_json)
+    load_named_items(json_path, from_json)
     load_cached_sources()
 
 

@@ -9,6 +9,8 @@ _validation_data = {
     'sidequests': (list, True)
 }
 
+json_path = 'configs/challenges.json'
+
 
 class Challenge:
     def __init__(self,
@@ -71,4 +73,4 @@ def from_json(obj: dict):
 
 def load_challenges():
     from models.load_util import load_named_items
-    load_named_items('configs/challenges.json', from_json)
+    load_named_items(json_path, from_json)

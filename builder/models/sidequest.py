@@ -13,6 +13,8 @@ _validation_data = {
     'layers': (list, False),
 }
 
+json_path = 'configs/sidequests.json'
+
 
 class Sidequest:
     def __init__(self,
@@ -122,4 +124,4 @@ def from_json(obj: dict):
 
 def load_sidequests():
     from models.load_util import load_named_items
-    load_named_items('configs/sidequests.json', from_json)
+    load_named_items(json_path, from_json)

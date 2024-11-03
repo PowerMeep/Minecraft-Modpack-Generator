@@ -20,11 +20,20 @@ def start():
     from flask_restful import Api
 
     from resources.modpacks import Modpacks
+    from resources.mods import Mods
+    from resources.layers import Layers
+    from resources.sidequests import Sidequests
+    from resources.challenges import Challenges
 
     app = Flask(__name__)
     api = Api(app)
 
     api.add_resource(Modpacks, '/')
+    api.add_resource(Mods, '/mods')
+    api.add_resource(Layers, '/layers')
+    api.add_resource(Sidequests, '/sidequests')
+    api.add_resource(Challenges, '/challenges')
+
     app.run(host='0.0.0.0', port=8000)
 
 

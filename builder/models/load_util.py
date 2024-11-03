@@ -38,8 +38,7 @@ def load_items(path: str,
     logger.warning(f'Reading from file: {path}')
     import json
     with open(path) as f:
-        raw = f.read()
-        all_mods = json.loads(raw)
+        all_mods = json.load(f)
         for m_dict in all_mods:
             callback(m_dict)
 
@@ -49,9 +48,8 @@ def load_named_items(path: str,
     logger.warning(f'Reading from file: {path}')
     import json
     with open(path) as f:
-        raw = f.read()
-        all_mods = json.loads(raw)
-        for m_dict in all_mods:
+        all_items = json.load(fp=f)
+        for m_dict in all_items:
             if 'name' not in m_dict:
                 logger.error(f'Skipping unnamed item: {json.dumps(m_dict)}')
             else:
