@@ -37,6 +37,7 @@ This is needed to generate player-specific configurations.
 - [x] Auto choose the configuration that gets the most mods
 - [x] Cache api calls
 - [x] Validate JSON files when reading them in
+- [ ] Remove sidequests when all of their mods have been removed
 
 ### Milestone 1
 **The builder consistently assembles sensible configurations.**
@@ -49,7 +50,7 @@ This is needed to generate player-specific configurations.
   - [x] Players in params
   - [x] Players in request body
   - [ ] Other configs
-- [ ] Dockerfile
+- [x] Dockerfile
 - [ ] Discord integration
 
 ### Milestone 3

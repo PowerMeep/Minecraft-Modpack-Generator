@@ -11,7 +11,11 @@ logger = logging.getLogger()
 time_format = '%Y-%m-%dT%H:%M:%S.%f%z'
 stale_time = os.environ.get('CACHE_STALE_TIME')
 if stale_time is not None:
-    stale_time = parse(stale_time, as_timedelta=True)
+    try:
+        stale_time = parse(stale_time, as_timedelta=True)
+    except:
+        logger.error(f'Unable to parse cache stale time: {stale_time}')
+        stale_time = None
 
 json_path = 'configs/mods.json'
 
