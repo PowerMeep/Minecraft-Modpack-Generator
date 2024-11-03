@@ -1,4 +1,7 @@
+import logging
 import random
+
+logger = logging.getLogger()
 
 
 def choice(obj, default):
@@ -104,3 +107,18 @@ class ModPack:
             'sidequests': sq_objs,
             'mods': mod_objs
         }
+
+
+def generate(players=None) -> ModPack:
+    # TODO: pass in other config and overrides here
+    from random import choices
+    from models.challenge import weights_by_challenge
+    modpack = ModPack()
+    modpack.challenge = choices(
+        population=list(weights_by_challenge.keys()),
+        weights=list(weights_by_challenge.values()),
+        k=1
+    )[0]
+    logger.info(f'Chose challenge "{modpack.challenge.name}"')
+    modpack.collapse(players)
+    return modpack

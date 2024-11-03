@@ -1,31 +1,9 @@
-import json
 import logging
-from random import choices
 
-from builder.models.modpack import ModPack
-from models.challenge import weights_by_challenge
-
-
-logging.basicConfig(
-    format='%(asctime)s %(levelname)-8s %(message)s'
-)
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
 
 
-def generate(players=None) -> ModPack:
-    modpack = ModPack()
-    modpack.challenge = choices(
-        population=list(weights_by_challenge.keys()),
-        weights=list(weights_by_challenge.values()),
-        k=1
-    )[0]
-    logger.info(f'Chose challenge "{modpack.challenge.name}"')
-    modpack.collapse(players)
-    return modpack
-
-
-def main():
+def load():
     from models.mod import load_mods
     from models.layer import load_layers
     from models.sidequest import load_sidequests
@@ -36,16 +14,28 @@ def main():
     load_sidequests()
     load_challenges()
 
-    modpack = generate([])
-    logger.info(json.dumps(
-        modpack.to_json(),
-        indent=4,
-        separators=(',', ': ')
-    ))
+
+def start():
+    from flask import Flask
+    from flask_restful import Api
+
+    from resources.modpacks import Modpacks
+
+    app = Flask(__name__)
+    api = Api(app)
+
+    api.add_resource(Modpacks, '/')
+    app.run(host='0.0.0.0', port=8000)
+
+
+def main():
+    logging.basicConfig(
+        format='%(asctime)s %(levelname)-8s %(message)s'
+    )
+    logger.setLevel(logging.INFO)
+    load()
+    start()
 
 
 if __name__ == '__main__':
-    # TODO: launch args
-    #  - players are required beforehand for the hitman stuff
-    #  - ability to specify other stuff
     main()

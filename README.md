@@ -43,10 +43,12 @@ This is needed to generate player-specific configurations.
 
 ### Milestone 2
 **The builder describes the configuration in the Discord server.**
-- [ ] REST API
+- [x] REST API
   - [x] Pass in players
   - [x] Per-player sidequests
-  - [ ] Pass configs in body
+  - [x] Players in params
+  - [x] Players in request body
+  - [ ] Other configs
 - [ ] Dockerfile
 - [ ] Discord integration
 
