@@ -1,6 +1,14 @@
 import logging
 logger = logging.getLogger()
 
+_validation_data = {
+    'name': (str, True),
+    'description': (str, True),
+    'duration': (str, True),
+    'layers': (list, True),
+    'sidequests': (list, True)
+}
+
 
 class Challenge:
     def __init__(self,
@@ -38,7 +46,17 @@ def _get_sidequests(element):
 
 
 def from_json(obj: dict):
-    from models.load_util import get_layers
+    from models.load_util import validate_type, get_layers
+    errors = validate_type(
+        obj.get('name'),
+        _validation_data,
+        obj
+    )
+    if errors:
+        for error in errors:
+            logger.error(error)
+        return
+
     c = Challenge(
         name=obj.get('name'),
         description=obj.get('description'),

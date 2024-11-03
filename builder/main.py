@@ -7,7 +7,7 @@ from models.challenge import weights_by_challenge
 
 
 logging.basicConfig(
-    format='%(message)s'
+    format='%(asctime)s %(levelname)-8s %(message)s'
 )
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)

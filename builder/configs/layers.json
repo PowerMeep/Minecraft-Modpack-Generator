@@ -55,8 +55,8 @@
   },
   {
     "name": "Aether",
-    "terrain_mod": "Vanilla",
-    "village_mod": "Vanilla",
+    "terrain_mod": ["Vanilla"],
+    "village_mod": ["Vanilla"],
     "mods": [
       "Aether"
     ]
@@ -69,7 +69,7 @@
   },
   {
     "name": "Alex's Caves",
-    "terrain_mod": "Vanilla",
+    "terrain_mod": ["Vanilla"],
     "mods": [
       "Alex's Caves"
     ]
@@ -84,7 +84,7 @@
   {
     "name": "High Seas",
     "description": "A layer focused around the sea.",
-    "terrain_mod": "Continents",
+    "terrain_mod": ["Continents"],
     "mods": [
       "Eureka",
       "Valkyrien Skies",
@@ -146,7 +146,7 @@
   {
     "name": "Stratospherical",
     "description":"A layer focusing on height and verticality.",
-    "terrain_mod": "Stratospherical Expansion",
+    "terrain_mod": ["Stratospherical Expansion"],
     "mods": [
       "Grappling Hooks",
       "Eureka",
@@ -156,7 +156,7 @@
   {
     "name": "Mayor Mine",
     "description":"A layer focusing on enhancing villages by hand.",
-    "village_mod": "Vanilla",
+    "village_mod": ["Vanilla"],
     "mods": [
       "Waystones",
       "Random Village Names",

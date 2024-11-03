@@ -1,6 +1,14 @@
 import logging
 logger = logging.getLogger()
 
+_validation_data = {
+    'name': (str, True),
+    'description': (str, False),
+    'mods': (list, False),
+    'terrain_mod': (list, False),
+    'village_mod': (list, False)
+}
+
 
 class Layer:
     def __init__(self,
@@ -145,6 +153,17 @@ def _get_mods(element):
 
 
 def from_json(obj: dict):
+    from models.load_util import validate_type
+    errors = validate_type(
+        obj.get('name'),
+        _validation_data,
+        obj
+    )
+    if errors:
+        for error in errors:
+            logger.error(error)
+        return
+
     logger.info(f'Loading Layer: {obj.get("name")}')
     l = Layer(
         name=obj.get('name'),

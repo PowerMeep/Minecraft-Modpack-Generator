@@ -36,7 +36,7 @@ This is needed to generate player-specific configurations.
 - [ ] Make the pretty version table
 - [x] Auto choose the configuration that gets the most mods
 - [x] Cache api calls
-- [ ] Validate JSON files when reading them in
+- [x] Validate JSON files when reading them in
 
 ### Milestone 1
 **The builder consistently assembles sensible configurations.**

@@ -56,3 +56,18 @@ def load_named_items(path: str,
                 logger.error(f'Skipping unnamed item: {json.dumps(m_dict)}')
             else:
                 callback(m_dict)
+
+
+def validate_type(name: str,
+                  types_by_field: dict,
+                  data: dict) -> list:
+    out = []
+    for field, expected in types_by_field.items():
+        expected_type = expected[0]
+        required = expected[1]
+        value = data.get(field)
+        if value is None and not required:
+            continue
+        if type(value) is not expected_type:
+            logger.error(f'{name}: {field} is not of type {expected_type}')
+    return out

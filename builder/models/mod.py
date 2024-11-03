@@ -14,6 +14,12 @@ key_date = 'date'
 key_version = 'version'
 key_url = 'url'
 
+_validation_data = {
+    'name': (str, True),
+    'curseforge_id': (int, False),
+    'modrinth_slug': (str, False)
+}
+
 
 def dict_to_x_list(d) -> list:
     out = []
@@ -92,6 +98,17 @@ mods_by_name = {
 
 
 def from_json(obj: dict):
+    from models.load_util import validate_type
+    errors = validate_type(
+        obj.get('name'),
+        _validation_data,
+        obj
+    )
+    if errors:
+        for error in errors:
+            logger.error(error)
+        return
+
     m = Mod(
         name=obj.get('name'),
         curseforge_id=obj.get('curseforge_id'),

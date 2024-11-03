@@ -3,6 +3,16 @@ from random import choice, choices
 
 logger = logging.getLogger()
 
+_validation_data = {
+    'name': (str, True),
+    'description': (str, True),
+    'per_player': (bool, True),
+    'players_upfront': (bool, True),
+    'hardcore': (bool, False),
+    'data': (dict, False),
+    'layers': (list, False),
+}
+
 
 class Sidequest:
     def __init__(self,
@@ -85,8 +95,18 @@ sidequests_by_name = {}
 
 
 def from_json(obj: dict):
-    from models.load_util import get_layers
-    m = Sidequest(
+    from models.load_util import get_layers, validate_type
+    errors = validate_type(
+        obj.get('name'),
+        _validation_data,
+        obj
+    )
+    if errors:
+        for error in errors:
+            logger.error(error)
+        return
+
+    sq = Sidequest(
         name=obj.get('name'),
         description=obj.get('description'),
         per_player=obj.get('per_player'),
@@ -95,8 +115,9 @@ def from_json(obj: dict):
         layers=get_layers(obj.get('layers')),
         data=obj.get('data')
     )
-    logger.info(f'Loaded Sidequest: {m.name}')
-    sidequests_by_name[m.name] = m
+
+    logger.info(f'Loaded Sidequest: {sq.name}')
+    sidequests_by_name[sq.name] = sq
 
 
 def load_sidequests():
