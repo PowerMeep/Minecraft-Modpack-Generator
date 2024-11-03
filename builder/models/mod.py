@@ -1,10 +1,17 @@
-import logging
-import sqlite3
 from datetime import datetime, timezone
+import logging
+import os
+import sqlite3
+
+from pytimeparse2 import parse
+
 
 logger = logging.getLogger()
 
 time_format = '%Y-%m-%dT%H:%M:%S.%f%z'
+stale_time = os.environ.get('CACHE_STALE_TIME')
+if stale_time is not None:
+    stale_time = parse(stale_time, as_timedelta=True)
 
 db_name = 'mod_cache.db'
 table_timestamps = 'timestamps'
@@ -57,7 +64,12 @@ class Mod:
             logger.debug(f'Existing source is more recent: {key}: {url} < {existing}')
 
     def is_stale(self):
-        return self.last_update is None
+        if self.last_update is None:
+            return True
+        if stale_time is None:
+            return False
+        oldest = datetime.now(timezone.utc) - stale_time
+        return self.last_update <= oldest
 
     def save_sources(self):
         _setup_cache()

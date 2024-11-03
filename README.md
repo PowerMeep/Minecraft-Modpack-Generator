@@ -46,7 +46,7 @@ This is needed to generate player-specific configurations.
 - [ ] REST API
   - [x] Pass in players
   - [x] Per-player sidequests
-  - [ ] Pass in configs
+  - [ ] Pass configs in body
 - [ ] Dockerfile
 - [ ] Discord integration
 
