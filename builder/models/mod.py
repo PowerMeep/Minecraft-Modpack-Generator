@@ -19,7 +19,7 @@ if stale_time is not None:
 
 json_path = 'configs/mods.json'
 
-db_name = 'mod_cache.db'
+db_name = 'configs/mod_cache.db'
 table_timestamps = 'timestamps'
 table_sources = 'sources'
 key_name = 'name'
