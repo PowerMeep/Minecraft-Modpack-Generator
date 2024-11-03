@@ -1,0 +1,158 @@
+[
+  {
+    "name": "Location, Location",
+    "description": "Players must set up base in the given location",
+    "per_player": true,
+    "players_upfront": false,
+    "hardcore": false,
+    "data": {
+      "Treetops": 1,
+      "Cliffside": 1,
+      "Mountaintop": 1,
+      "Underwater": 1
+    },
+    "layers": []
+  },
+  {
+    "name": "404 Challenge",
+    "description": "Once the sun sets on the first day, players must go underground and never return to the surface.",
+    "per_player": false,
+    "players_upfront": false,
+    "hardcore": false,
+    "data": {},
+    "layers": []
+  },
+  {
+    "name": "Nomadic",
+    "description": "Players may not construct any long-term base and must continuously travel.",
+    "per_player": false,
+    "players_upfront": false,
+    "hardcore": false,
+    "data": {},
+    "layers": []
+  },
+  {
+    "name": "Not the Light!",
+    "description": "Players must stay out of direct sunlight.",
+    "per_player": false,
+    "players_upfront": false,
+    "hardcore": false,
+    "data": {},
+    "layers": [
+      "Sunburn"
+    ]
+  },
+  {
+    "name": "Insomnia",
+    "description": "Players are unable to sleep.",
+    "per_player": false,
+    "players_upfront": false,
+    "hardcore": false,
+    "data": {},
+    "layers": [
+      "Insomnia"
+    ]
+  },
+  {
+    "name": "Tough as Nails",
+    "description": "Players must stay at a comfortable temperature and stay hydrated.",
+    "per_player": false,
+    "players_upfront": false,
+    "hardcore": false,
+    "data": {},
+    "layers": [
+      "Tough as Nails"
+    ]
+  },
+  {
+    "name": "Like what now?",
+    "description": "All mobs replaced with Lycanites.",
+    "per_player": false,
+    "players_upfront": false,
+    "hardcore": false,
+    "data": {},
+    "layers": [
+      "Lycanites"
+    ]
+  },
+  {
+    "name": "Sussy Baka",
+    "description": "A splinter cell of players are imposters that must try to prevent the main goal. The hard part is not getting caught!",
+    "per_player": true,
+    "players_upfront": true,
+    "hardcore": false,
+    "data": {
+      "crewmate": 10,
+      "imposter": 1
+    },
+    "layers": [
+      "Hitman"
+    ]
+  },
+  {
+    "name": "Manhunt",
+    "description": "A splinter cell of players actually tries to complete the mission while everybody else tries to stop them.",
+    "per_player": true,
+    "players_upfront": true,
+    "hardcore": true,
+    "data": {
+      "hunter": 10,
+      "hunted": 1
+    },
+    "layers": [
+      "Hitman"
+    ]
+  },
+  {
+    "name": "Bounties",
+    "description": "Each player is assigned to kill another player.",
+    "per_player": true,
+    "players_upfront": true,
+    "hardcore": false,
+    "data": {},
+    "layers": [
+      "Hitman"
+    ]
+  },
+  {
+    "name": "All for One",
+    "description": "If one player dies, all other players die simultaneously.",
+    "per_player": true,
+    "players_upfront": true,
+    "hardcore": false,
+    "data": {},
+    "layers": []
+  },
+  {
+    "name": "Feeling Inspired",
+    "description": "Players must build something based on the given prompt.",
+    "per_player": true,
+    "players_upfront": false,
+    "hardcore": false,
+    "data": {
+      "Tower": 1,
+      "Upside-Down": 1,
+      "Spirals": 1,
+      "Natural": 1,
+      "Cubes": 1,
+      "Circles": 1,
+      "Triangles": 1
+    },
+    "layers": []
+  },
+  {
+    "name": "Hoarder",
+    "description": "Players must stockpile the given resource.",
+    "per_player": true,
+    "players_upfront": false,
+    "hardcore": false,
+    "data": {
+      "Iron": 1,
+      "Copper": 1,
+      "Diamonds": 1,
+      "Emeralds": 1,
+      "Gold": 1
+    },
+    "layers": []
+  }
+]

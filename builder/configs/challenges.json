@@ -1,0 +1,195 @@
+[
+  {
+    "name": "100 Day Hardcore Survival",
+    "description": "Players must try to survive the scenario to the 100 day mark.",
+    "duration": "100 Minecraft Days",
+    "synced": true,
+    "weight": 50,
+    "layers": [
+      "Essentials",
+      [
+        "Alex's Caves",
+        "Zombies",
+        "Sculk Horde",
+        "Twilight Forest",
+        "Ice and Fire",
+        "Ars Noveau",
+        "Stratospherical",
+        "Aether",
+        "Winter Wonderland",
+        "Roughin' It",
+        "High Seas"
+      ],
+      "Any Vanilla-Friendly Terrain",
+      "Any Village"
+    ],
+    "sidequests": [
+      "Tough as Nails",
+      "Not the Light!",
+      "All for One",
+      "Insomnia"
+    ]
+  },
+  {
+    "name": "Battle",
+    "description": "Players have 7 real world days to prep for a battle to the death. A single-elimination tournament is held on the 7th day to determine the victor.",
+    "duration": "7 Real Days",
+    "synced": false,
+    "weight": 10,
+    "layers": [
+      "Essentials",
+      [
+        "Ice and Fire",
+        "Aether",
+        "Ars Noveau"
+      ],
+      "Any Terrain",
+      "Any Village",
+      [
+        "Dungeons Arise",
+        "Dungeon Crawl",
+        "Vanilla"
+      ],
+      "Combat"
+    ],
+    "sidequests": [
+      "Insomnia",
+      "Like what now?"
+    ]
+  },
+  {
+    "name": "Build Battle",
+    "description": "Players have 7 real world days to build the best build they can build. A vote is held on the 7th day to determine the victor.",
+    "duration": "7 Real Days",
+    "synced": false,
+    "weight": 10,
+    "layers": [
+      "Essentials",
+      "Any Terrain",
+      "Any Village",
+      "Builds"
+    ],
+    "sidequests": [
+      "Feeling Inspired",
+      "Hoarder",
+      "Insomnia",
+      "Like what now?"
+    ]
+  },
+  {
+    "name": "Capture the Flag",
+    "description": "Players spend 7 days building a fortress. On the 7th day, a game of CTF is played to determine the winning team.",
+    "duration": "7 Real Days",
+    "synced": false,
+    "weight": 10,
+    "layers": [
+      "Essentials",
+      "Builds",
+      "Any Village",
+      "Any Terrain"
+    ],
+    "sidequests": [
+      "Feeling Inspired",
+      "Not the Light!",
+      "Hoarder",
+      "Insomnia",
+      "Like what now?"
+    ]
+  },
+  {
+    "name": "Cobblemon",
+    "description": "Players have 7 real world days to build a team of 6 pokemon. A tournament is held on the 7th day to determine the victor.",
+    "duration": "7 Real Days",
+    "synced": false,
+    "weight": 10,
+    "layers": [
+      "Essentials",
+      "Cobblemon",
+      "Any Vanilla-Friendly Terrain",
+      "Any Village"
+    ],
+    "sidequests": []
+  },
+  {
+    "name": "Mayor Mine",
+    "description": "Players are each assigned a village and are given 7 days to clean it up. A vote is held on the 7th day to determine the victor.",
+    "duration": "7 Real Days",
+    "synced": false,
+    "weight": 10,
+    "layers": [
+      "Essentials",
+      "Mayor Mine",
+      "Any Terrain",
+      "Builds"
+    ],
+    "sidequests": [
+      "Feeling Inspired",
+      "Hoarder",
+      "Insomnia",
+      "Like what now?"
+    ]
+  },
+  {
+    "name": "The One Percent",
+    "description": "Players have 7 days to accrue as much wealth as they can. A vote is held on the 7th day to determine the victor.",
+    "duration": "7 Real Days",
+    "synced": false,
+    "weight": 10,
+    "layers": [
+      "Essentials",
+      [
+        "Ice and Fire",
+        "Stratospherical",
+        "Aether",
+        "Winter Wonderland",
+        "Roughin' It",
+        "Twilight Forest",
+        "High Seas"
+      ],
+      "Any Terrain",
+      "Any Village",
+      [
+        "Natural Wildlife",
+        "Lycanites",
+        "Vanilla"
+      ],
+      [
+        "Dungeons Arise",
+        "Dungeon Crawl",
+        "Vanilla"
+      ],
+      "Resourceful"
+
+    ],
+    "sidequests": [
+      "Hoarder",
+      "All for One",
+      "Insomnia"
+    ]
+  },
+  {
+    "name": "The Race",
+    "description": "Players have 7 real world days to acquire the best mount they can find. A race is held on the 7th day to determine the victor.",
+    "duration": "7 Real Days",
+    "synced": false,
+    "weight": 10,
+    "layers": [
+      "Essentials",
+      [
+        "Ice and Fire",
+        "Stratospherical",
+        "Aether",
+        "Winter Wonderland",
+        "Roughin' It",
+        "High Seas"
+      ],
+      "Any Terrain",
+      "Any Village",
+      "Mounts"
+    ],
+    "sidequests": [
+      "Insomnia",
+      "Like what now?"
+    ]
+  }
+]

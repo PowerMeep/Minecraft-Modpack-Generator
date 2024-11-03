@@ -1,8 +1,8 @@
-import logging
 import json
+import logging
 
-from challenges import *
-from models import ModPack
+from builder.models.modpack import ModPack
+
 
 logging.basicConfig(
     format='%(message)s'
@@ -10,25 +10,15 @@ logging.basicConfig(
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-challenges = {
-    CHALLENGE_100_DAY: 50,
-    CHALLENGE_ONE_PERCENT: 10,
-    CHALLENGE_BATTLE: 10,
-    CHALLENGE_BUILD_BATTLE: 10,
-    CHALLENGE_CAPTURE_THE_FLAG: 10,
-    CHALLENGE_COBBLEMON: 10,
-    CHALLENGE_MAYOR_MINE: 10,
-    CHALLENGE_RACE: 10,
-}
-
 
 def generate(players=None) -> ModPack:
     from random import choices
+    from models.challenge import weights_by_challenge
 
     modpack = ModPack()
     modpack.challenge = choices(
-        population=list(challenges.keys()),
-        weights=list(challenges.values()),
+        population=list(weights_by_challenge.keys()),
+        weights=list(weights_by_challenge.values()),
         k=1
     )[0]
     logger.info(f'Chose challenge "{modpack.challenge.name}"')
@@ -37,10 +27,20 @@ def generate(players=None) -> ModPack:
 
 
 def main():
+    from models.mod import load_mods
+    from models.layer import load_layers
+    from models.sidequest import load_sidequests
+    from models.challenge import load_challenges
+
+    load_mods()
+    load_layers()
+    load_sidequests()
+    load_challenges()
+
     modpack = generate([])
     logger.info(json.dumps(
         modpack.to_json(),
-        # sort_keys=True,
+        sort_keys=True,
         indent=4,
         separators=(',', ': ')
     ))

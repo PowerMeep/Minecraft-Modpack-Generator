@@ -29,8 +29,8 @@ This is needed to generate player-specific configurations.
 ## Roadmap
 
 ### General TODO:
-- [x] Ability to look up mod metadata from a url
-- [ ] Separation of code and configuration data
+- [ ] Ability to look up mod metadata from a url
+- [x] Separation of code and configuration data
 - [x] Use logging instead of print statements
 
 ### Milestone 1

@@ -1,0 +1,493 @@
+[
+  {
+    "name": "Hidden Names",
+    "curseforge_id": 479134,
+    "modrinth_slug": null
+  },
+  {
+    "name": "Bad Mobs",
+    "curseforge_id": 233258,
+    "modrinth_slug": "bad-mobs"
+  },
+  {
+    "name": "Storage Drawers",
+    "curseforge_id": 223852,
+    "modrinth_slug": "storagedrawers"
+  },
+  {
+    "name": "Alex's Mobs",
+    "curseforge_id": 426558,
+    "modrinth_slug": "alexs-mobs"
+  },
+  {
+    "name": "Alex's Caves",
+    "curseforge_id": 924854,
+    "modrinth_slug": "alexs-caves"
+  },
+  {
+    "name": "Tough as Nails",
+    "curseforge_id": 246391,
+    "modrinth_slug": "tough-as-nails"
+  },
+  {
+    "name": "Armor Underwear",
+    "curseforge_id": 310383,
+    "modrinth_slug": null
+  },
+  {
+    "name": "Waystones",
+    "curseforge_id": 245755,
+    "modrinth_slug": "waystones"
+  },
+  {
+    "name": "Craftable Saddles",
+    "curseforge_id": 247093,
+    "modrinth_slug": null
+  },
+  {
+    "name": "Mob Lassos",
+    "curseforge_id": 852670,
+    "modrinth_slug": "mob-lassos"
+  },
+  {
+    "name": "Cobblemon",
+    "curseforge_id": 687131,
+    "modrinth_slug": "cobblemon"
+  },
+  {
+    "name": "Aether",
+    "curseforge_id": 255308,
+    "modrinth_slug": "aether"
+  },
+  {
+    "name": "Ice and Fire",
+    "curseforge_id": 264231,
+    "modrinth_slug": "ice-and-fire-dragons"
+  },
+  {
+    "name": "Twilight Forest",
+    "curseforge_id": 227639,
+    "modrinth_slug": null
+  },
+  {
+    "name": "Sculk Horde",
+    "curseforge_id": 501766,
+    "modrinth_slug": "sculk-horde"
+  },
+  {
+    "name": "Stratospherical Expansion",
+    "curseforge_id": 823268,
+    "modrinth_slug": "stratospherical-expansion"
+  },
+  {
+    "name": "Ecospherical Expansion",
+    "curseforge_id": 570025,
+    "modrinth_slug": "ecospherical-expansion"
+  },
+  {
+    "name": "Eureka",
+    "curseforge_id": 654384,
+    "modrinth_slug": "eureka"
+  },
+  {
+    "name": "Valkyrien Skies",
+    "curseforge_id": 258371,
+    "modrinth_slug": "valkyrien-skies"
+  },
+  {
+    "name": "Weather2",
+    "curseforge_id": 237746,
+    "modrinth_slug": "weather-storms-tornadoes"
+  },
+  {
+    "name": "Serene Seasons",
+    "curseforge_id": 291874,
+    "modrinth_slug": "serene-seasons"
+  },
+  {
+    "name": "Farmer's Delight",
+    "curseforge_id": 398521,
+    "modrinth_slug": "farmers-delight"
+  },
+  {
+    "name": "Create Central Kitchen",
+    "curseforge_id": 820977,
+    "modrinth_slug": "create-central-kitchen"
+  },
+  {
+    "name": "Terralith",
+    "curseforge_id": 513688,
+    "modrinth_slug": "terralith"
+  },
+  {
+    "name": "Terraforged",
+    "curseforge_id": 363820,
+    "modrinth_slug": null
+  },
+  {
+    "name": "Overhauled Overworld",
+    "curseforge_id": 921022,
+    "modrinth_slug": "wwoo"
+  },
+  {
+    "name": "Expanded Ecosphere",
+    "curseforge_id": 490686,
+    "modrinth_slug": "expanded-ecosphere"
+  },
+  {
+    "name": "Tectonic",
+    "curseforge_id": 686836,
+    "modrinth_slug": "tectonic"
+  },
+  {
+    "name": "Modern Beta",
+    "curseforge_id": null,
+    "modrinth_slug": null
+  },
+  {
+    "name": "Biomes O'Plenty",
+    "curseforge_id": 220318,
+    "modrinth_slug": "biomes-o-plenty"
+  },
+  {
+    "name": "Oh, the Biomes You'll Go",
+    "curseforge_id": 247560,
+    "modrinth_slug": "biomesyougo"
+  },
+  {
+    "name": "Primal Winter",
+    "comment": "Override config to allow setting the weather",
+    "curseforge_id": 393321,
+    "modrinth_slug": "primal-winter"
+  },
+  {
+    "name": "Snow Under Trees",
+    "curseforge_id": 353942,
+    "modrinth_slug": "snow-under-trees"
+  },
+  {
+    "name": "Snow! Real Magic!",
+    "curseforge_id": 308663,
+    "modrinth_slug": "snow-real-magic"
+  },
+  {
+    "name": "Snowballs Freeze Mobs",
+    "curseforge_id": 344436,
+    "modrinth_slug": "snowballs-freeze-mobs"
+  },
+  {
+    "name": "Head in the Clouds",
+    "curseforge_id": 821759,
+    "modrinth_slug": "head-in-the-clouds"
+  },
+  {
+    "name": "Snowy Spirit",
+    "curseforge_id": 566142,
+    "modrinth_slug": "snowy-spirit"
+  },
+  {
+    "name": "Rare Ice",
+    "curseforge_id": 373774,
+    "modrinth_slug": "rare-ice"
+  },
+  {
+    "name": "Random Village Names",
+    "curseforge_id": 452299,
+    "modrinth_slug": "random-villager-names"
+  },
+  {
+    "name": "Villager Names",
+    "curseforge_id": 345854,
+    "modrinth_slug": "villager-names-serilum"
+  },
+  {
+    "name": "Bountiful",
+    "curseforge_id": 309516,
+    "modrinth_slug": "bountiful"
+  },
+  {
+    "name": "Village Spawn Point",
+    "curseforge_id": 347381,
+    "modrinth_slug": "village-spawn-point"
+  },
+  {
+    "name": "Better Combat",
+    "curseforge_id": 639842,
+    "modrinth_slug": "better-combat"
+  },
+  {
+    "name": "Combat Roll",
+    "curseforge_id": 678036,
+    "modrinth_slug": "combat-roll"
+  },
+  {
+    "name": "Spartan Weaponry",
+    "curseforge_id": 278141,
+    "modrinth_slug": "spartan-weaponry"
+  },
+  {
+    "name": "Player Tracking Compass",
+    "curseforge_id": 377858,
+    "modrinth_slug": "player-tracking"
+  },
+  {
+    "name": "Identity",
+    "curseforge_id": 391390,
+    "modrinth_slug": null
+  },
+  {
+    "name": "Construction Wands",
+    "curseforge_id": 399558,
+    "modrinth_slug": "construction-wand"
+  },
+  {
+    "name": "Handcrafted",
+    "curseforge_id": 538214,
+    "modrinth_slug": "handcrafted"
+  },
+  {
+    "name": "Decorative Blocks",
+    "curseforge_id": 362528,
+    "modrinth_slug": "decorative-blocks"
+  },
+  {
+    "name": "Supplementaries",
+    "curseforge_id": 412082,
+    "modrinth_slug": "supplementaries"
+  },
+  {
+    "name": "Lootr",
+    "curseforge_id": 361276,
+    "modrinth_slug": "lootr"
+  },
+  {
+    "name": "Sophisticated Backpacks",
+    "curseforge_id": 422301,
+    "modrinth_slug": "sophisticated-backpacks"
+  },
+  {
+    "name": "Tinkers' Construct",
+    "curseforge_id": 74072,
+    "modrinth_slug": "tinkers-construct"
+  },
+  {
+    "name": "Create",
+    "curseforge_id": 328085,
+    "modrinth_slug": "create"
+  },
+  {
+    "name": "Randomium",
+    "curseforge_id": 523013,
+    "modrinth_slug": "randomium-ore"
+  },
+  {
+    "name": "Exotic Birds",
+    "curseforge_id": 242830,
+    "modrinth_slug": null
+  },
+  {
+    "name": "Aquaculture 2",
+    "curseforge_id": 60028,
+    "modrinth_slug": "aquaculture"
+  },
+  {
+    "name": "Aquamirae",
+    "curseforge_id": 536254,
+    "modrinth_slug": "aquamirae"
+  },
+  {
+    "name": "Continents",
+    "curseforge_id": 682515,
+    "modrinth_slug": "continents"
+  },
+  {
+    "name": "Quark",
+    "curseforge_id": 243121,
+    "modrinth_slug": "quark"
+  },
+  {
+    "name": "Upgrade Aquatic",
+    "curseforge_id": 326895,
+    "modrinth_slug": "upgrade-aquatic"
+  },
+  {
+    "name": "Realistic Horse Genetics",
+    "curseforge_id": 339184,
+    "modrinth_slug": "realistic-horse-genetics"
+  },
+  {
+    "name": "Genetic Animals",
+    "curseforge_id": 313213,
+    "modrinth_slug": null
+  },
+  {
+    "name": "Just Enough Items",
+    "curseforge_id": 238222,
+    "modrinth_slug": "jei"
+  },
+  {
+    "name": "Better Villages",
+    "curseforge_id": null,
+    "modrinth_slug": null
+  },
+  {
+    "name": "ChoiceTheorum's Overhauled Villages",
+    "curseforge_id": 623908,
+    "modrinth_slug": "ct-overhaul-village"
+  },
+  {
+    "name": "Clumps",
+    "curseforge_id": 256717,
+    "modrinth_slug": "clumps"
+  },
+  {
+    "name": "AI Improvements",
+    "curseforge_id": 233019,
+    "modrinth_slug": "ai-improvements"
+  },
+  {
+    "name": "Antique Atlas",
+    "curseforge_id": 227795,
+    "modrinth_slug": "antique-atlas"
+  },
+  {
+    "name": "Nature's Compass",
+    "curseforge_id": 252848,
+    "modrinth_slug": "natures-compass"
+  },
+  {
+    "name": "Corpse",
+    "curseforge_id": 316582,
+    "modrinth_slug": "corpse"
+  },
+  {
+    "name": "Fast Leaf Decay",
+    "curseforge_id": 230976,
+    "modrinth_slug": "fld"
+  },
+  {
+    "name": "Appleskin",
+    "curseforge_id": 248787,
+    "modrinth_slug": "appleskin"
+  },
+  {
+    "name": "The Hordes",
+    "curseforge_id": 485779,
+    "modrinth_slug": "the-hordes"
+  },
+  {
+    "name": "Zombie Awareness",
+    "curseforge_id": 237754,
+    "modrinth_slug": "zombie-awareness"
+  },
+  {
+    "name": "Configurable Extra Mob Drops",
+    "curseforge_id": 414350,
+    "modrinth_slug": "configurable-extra-mob-drops"
+  },
+  {
+    "name": "Incapacitated",
+    "curseforge_id": 528135,
+    "modrinth_slug": "incapacitated"
+  },
+  {
+    "name": "Grappling Hooks",
+    "curseforge_id": 238911,
+    "modrinth_slug": "grappling-hook-mod"
+  },
+  {
+    "name": "Curios",
+    "curseforge_id": 309927,
+    "modrinth_slug": "curios"
+  },
+  {
+    "name": "Mob Sunscreen",
+    "curseforge_id": 298408,
+    "modrinth_slug": "mob-sunscreen"
+  },
+  {
+    "name": "Burn in the Sun",
+    "curseforge_id": 484945,
+    "modrinth_slug": "burn-in-the-sun"
+  },
+  {
+    "name": "True Darkness",
+    "curseforge_id": 337243,
+    "modrinth_slug": "true-darkness"
+  },
+  {
+    "name": "Sleepn't",
+    "curseforge_id": 419092,
+    "modrinth_slug": null
+  },
+  {
+    "name": "Lycanites Mobs",
+    "curseforge_id": 224770,
+    "modrinth_slug": null
+  },
+  {
+    "name": "Goblin Traders",
+    "curseforge_id": 363703,
+    "modrinth_slug": null
+  },
+  {
+    "name": "When Dungeons Arise",
+    "curseforge_id": 442508,
+    "modrinth_slug": "when-dungeons-arise"
+  },
+  {
+    "name": "Dungeon Crawl",
+    "curseforge_id": 324973,
+    "modrinth_slug": null
+  },
+  {
+    "name": "Repurposed Structures",
+    "curseforge_id": 368293,
+    "modrinth_slug": "repurposed-structures-forge"
+  },
+  {
+    "name": "Yung's Better Dungeons",
+    "curseforge_id": 510089,
+    "modrinth_slug": "yungs-better-dungeons"
+  },
+  {
+    "name": "Goblins & Dungeons",
+    "curseforge_id": 535096,
+    "modrinth_slug": "goblins-dungeons"
+  },
+  {
+    "name": "Sound Physics",
+    "curseforge_id": 535489,
+    "modrinth_slug": "sound-physics-remastered"
+  },
+  {
+    "name": "Simple Voice Chat",
+    "curseforge_id": 416089,
+    "modrinth_slug": "simple-voice-chat"
+  },
+  {
+    "name": "Physics Pro",
+    "curseforge_id": 442735,
+    "modrinth_slug": "physicsmod"
+  },
+  {
+    "name": "Ars Noveau",
+    "curseforge_id": 401955,
+    "modrinth_slug": "ars-nouveau"
+  },
+  {
+    "name": "Torchmaster",
+    "curseforge_id": 254268,
+    "modrinth_slug": "torchmaster"
+  },
+  {
+    "name": "Raven Coffee",
+    "curseforge_id": 469185,
+    "modrinth_slug": "raven-coffee-mod"
+  },
+  {
+    "name": "Mystical Agriculture",
+    "curseforge_id": 246640,
+    "modrinth_slug": "mystical-agriculture"
+  }
+]
