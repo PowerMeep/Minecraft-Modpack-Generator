@@ -1,14 +1,13 @@
 from models.modpack import generate
 
-from flask_restful import Resource, request
+from quart import request
 
 
-class Modpacks(Resource):
-    def get(self):
-        if request.is_json:
-            body = request.json()
-            players = body.get('players') or []
-        else:
-            players = request.args.getlist('player')
-        modpack = generate(players)
-        return modpack.to_json()
+async def get():
+    if request.is_json:
+        body = await request.json
+        players = body.get('players') or []
+    else:
+        players = request.args.getlist('player')
+    modpack = generate(players)
+    return modpack.to_json()
