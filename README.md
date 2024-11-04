@@ -38,6 +38,7 @@ This is needed to generate player-specific configurations.
 - [x] Cache api calls
 - [x] Validate JSON files when reading them in
 - [ ] Remove sidequests when all of their mods have been removed
+- [ ] Seed the randomness
 
 ### Milestone 1
 **The builder consistently assembles sensible configurations.**
@@ -51,7 +52,10 @@ This is needed to generate player-specific configurations.
   - [x] Players in request body
   - [ ] Other configs
 - [x] Dockerfile
-- [ ] Discord integration
+- [x] Discord
+  - [x] Generate and post a configuration
+  - [x] DM players their specific configurations
+  - [ ] Discord post uses better links
 
 ### Milestone 3
 **The builder is able to assemble zip files that can be imported by clients.**
