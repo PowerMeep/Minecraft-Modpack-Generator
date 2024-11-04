@@ -5,7 +5,7 @@ FROM python:3.12-slim-bullseye
 WORKDIR /app
 
 # Expose this directory for overrides
-VOLUME /app/configs
+VOLUME /app/data
 
 # Copy the application files into the working directory
 COPY builder/ .

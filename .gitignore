@@ -123,11 +123,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Files to be deleted or for reference only
-scrap/
-
 # Files generated at runtime
-data/
+# data/
 
 # IDE files that change frequently
 .idea/

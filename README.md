@@ -29,16 +29,94 @@ This is needed to generate player-specific configurations.
 ## Roadmap
 
 ### General TODO:
-- [x] Ability to look up mod metadata from a url
-- [ ] Mods w/ multiple configs
+- [ ] Seed the randomness
 - [ ] Figure out modrinth multiple project scrape
-- [x] Get loaders and versions from responses
 - [ ] Make the pretty version table
+- [ ] Show the scenario names, not just the challenge types
+- [x] Ability to look up mod metadata from a url
+- [x] Get loaders and versions from responses
 - [x] Auto choose the configuration that gets the most mods
 - [x] Cache api calls
 - [x] Validate JSON files when reading them in
+- [ ] Layer-Mod link has more data
+  - [ ] Requiredness
+  - [ ] Mod Configs
+  - [ ] Layer Configs?
 - [ ] Remove sidequests when all of their mods have been removed
-- [ ] Seed the randomness
+  - [ ] Sidequests are aware of requiredness
+- [ ] Retrieve and store more CF data
+  - Official name
+  - Friendly url
+  - File Id
+  - Dependencies
+  - Modloader data
+  - Overrides
+    - Configs
+
+
+
+
+
+Multiple mod configs:
+- Configs need to be aware of which versions they support (with wildcards)
+- A mod may have multiple configs, a config may have multiple versions
+
+
+**Option 1: Mods with different configs are defined as different mods**
+
+Pros
++ Layers just reference which mod they want
++ Layers are able to reuse the same configs
++ Mods that are dropped before the final result will also drop their configs
+
+Cons
+- Duplicates mod definitions
+
+**Option 2: Mods define their own configs**
+
+Pros
++ Layers are able to reuse the same configs
++ Mods that are dropped before the final result will also drop their configs
++ No duplication
+
+Cons
+- Layers reference mods and their configs
+
+**Option 3: Layers define configs (mod level)**
+
+Pros
++ More cohesive configs, knowing what other mods will be included (?)
++ Mods that are dropped before the final result will also drop their configs
+
+Cons
+- Some configs may be duplicated with other layers'
+
+
+**Option 4: Layers define configs (layer level)**
+
+Pros
++ More cohesive configs, knowing what other mods will be included
+
+Cons
+- Some configs may be duplicated with other layers'
+- Some mods may be dropped from the final result, but the configs would be kept
+
+--
+
+**Option: Mods had different entries for each config**
+- Layers reference the mod-config they want
+- Layers also define their own configs
+- Layer configs are applied on top of mod configs
+
+**Option:**
+- Configs are defined separately
+- Layers... ??
+- This one might just be too complicated
+
+
+
+
+
 
 ### Milestone 1
 **The builder consistently assembles sensible configurations.**

@@ -13,7 +13,7 @@ _validation_data = {
     'layers': (list, False),
 }
 
-json_path = 'configs/sidequests.json'
+json_path = 'data/sidequests.json'
 
 
 class Sidequest:

@@ -17,9 +17,9 @@ if stale_time is not None:
         logger.error(f'Unable to parse cache stale time: {stale_time}')
         stale_time = None
 
-json_path = 'configs/mods.json'
+json_path = 'data/mods.json'
 
-db_name = 'configs/mod_cache.db'
+db_name = 'data/mod_cache.db'
 table_timestamps = 'timestamps'
 table_sources = 'sources'
 key_name = 'name'
@@ -34,28 +34,19 @@ _validation_data = {
 }
 
 
-def dict_to_x_list(d) -> list:
-    out = []
-    for v in d.values():
-        out .append('x' if v else ' ')
-    return out
-
-
 class Mod:
     def __init__(self,
                  name,
-                 configs=None,
                  curseforge_id: int = None,
                  modrinth_slug: str = None):
         self.name = name
         self.curseforge_id = curseforge_id
         self.modrinth_slug = modrinth_slug
-        self.sources = {}
         self.last_update = None
+        self.sources = {}
 
-        # file id
-        # required (enabled?)
-        self.configs = configs or []
+    def clear_sources(self):
+        self.sources.clear()
 
     def add_source(self,
                    loader: str,
@@ -98,13 +89,6 @@ class Mod:
             )
         connection.commit()
         connection.close()
-
-    def get_alt_configuration(self, configs):
-        mod = Mod(
-            name=self.name,
-            configs=configs
-        )
-        return mod
 
     def __str__(self):
         return self.name

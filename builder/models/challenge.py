@@ -9,7 +9,7 @@ _validation_data = {
     'sidequests': (list, True)
 }
 
-json_path = 'configs/challenges.json'
+json_path = 'data/challenges.json'
 
 
 class Challenge:

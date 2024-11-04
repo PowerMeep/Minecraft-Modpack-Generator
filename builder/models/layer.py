@@ -9,7 +9,7 @@ _validation_data = {
     'village_mod': (list, False)
 }
 
-json_path = 'configs/layers.json'
+json_path = 'data/layers.json'
 
 
 class Layer:
@@ -104,6 +104,7 @@ class Layer:
                 continue
             else:
                 logger.warning(f'{mod.name} sources are stale and will be updated')
+                mod.clear_sources()
 
             response = curseforge.get_files(mod.curseforge_id)
 
