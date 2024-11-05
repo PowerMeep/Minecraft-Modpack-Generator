@@ -6,7 +6,8 @@ _validation_data = {
     'description': (str, True),
     'duration': (str, True),
     'layers': (list, True),
-    'sidequests': (list, True)
+    'sidequests': (list, True),
+    'themes': (list, False)
 }
 
 json_path = 'data/challenges.json'
@@ -18,10 +19,12 @@ class Challenge:
                  description,
                  duration,
                  layers: list = None,
+                 themes: list = None,
                  sidequests: list = None):
         self.name = name
         self.description = description
         self.duration = duration
+        self.themes = themes or []
         self.layers = layers or []
         self.sidequests = sidequests or []
 
@@ -64,6 +67,7 @@ def from_json(obj: dict):
         description=obj.get('description'),
         duration=obj.get('duration'),
         layers=get_layers(obj.get('layers')),
+        themes=get_layers(obj.get('themes')),
         sidequests=_get_sidequests(obj.get('sidequests')),
     )
     logger.info(f'Loaded challenge: {c.name}')

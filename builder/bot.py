@@ -27,7 +27,7 @@ class BuilderState:
 
     def to_embed(self):
         desc = [
-            f'# {self.modpack.challenge.name}',
+            f'# {self.modpack.get_name()}',
             self.modpack.challenge.description,
             f'\n**Duration:** {self.modpack.challenge.duration}'
         ]

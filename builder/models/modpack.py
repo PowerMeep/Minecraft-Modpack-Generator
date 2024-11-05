@@ -17,8 +17,14 @@ class ModPack:
         self.challenge = None
         self.layers = []
         self.version = None
+        self.theme = None
         self.sources_by_mod = {}
         self.meta_by_sidequest = {}
+
+    def get_name(self):
+        if self.theme:
+            return f'{self.challenge.name} - {self.theme.name}'
+        return self.challenge.name
 
     def collapse(self,
                  players: list = None):
@@ -35,11 +41,15 @@ class ModPack:
         from models.sidequest import Sidequest
         result = Layer()
 
+        self.theme = choice(self.challenge.themes, None)
+        if self.theme:
+            logger.info(f'> Selected theme: {self.theme.name}')
+            result.update(self.theme)
+
         for layer in self.challenge.layers:
             if type(layer) is list:
                 layer = choice(layer, None)
-            if layer:
-                result.update(layer)
+            result.update(layer)
 
         for layer in self.layers:
             result.update(layer)
@@ -102,8 +112,9 @@ class ModPack:
             mod_objs.append(mod_obj)
 
         return {
-            'version': self.version,
+            'name': self.get_name(),
             'challenge': self.challenge.to_json(),
+            'version': self.version,
             'sidequests': sq_objs,
             'mods': mod_objs
         }

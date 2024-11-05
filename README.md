@@ -29,10 +29,11 @@ This is needed to generate player-specific configurations.
 ## Roadmap
 
 ### General TODO:
+- [ ] Implement compats
 - [ ] Seed the randomness
 - [ ] Figure out modrinth multiple project scrape
 - [ ] Make the pretty version table
-- [ ] Show the scenario names, not just the challenge types
+- [x] Show the scenario names, not just the challenge types
 - [x] Ability to look up mod metadata from a url
 - [x] Get loaders and versions from responses
 - [x] Auto choose the configuration that gets the most mods
