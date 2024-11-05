@@ -1,6 +1,8 @@
 import logging
 import random
 
+from models.layer import Layer
+
 logger = logging.getLogger()
 
 
@@ -15,9 +17,9 @@ def choice(obj, default):
 class ModPack:
     def __init__(self):
         self.challenge = None
-        self.layers = []
         self.version = None
         self.theme = None
+        self.result = Layer()
         self.sources_by_mod = {}
         self.meta_by_sidequest = {}
 
@@ -26,59 +28,36 @@ class ModPack:
             return f'{self.challenge.name} - {self.theme.name}'
         return self.challenge.name
 
-    def collapse(self,
-                 players: list = None):
-        """
-        Takes all layers added and collapses them into a single layer.
-        Ensures only one of each of these:
-        - Terrain mod
-        - Village mod
-
-        :return:
-        """
-        from models.mod import mods_by_name, Mod
-        from models.layer import Layer
-        from models.sidequest import Sidequest
-        result = Layer()
-
+    def _select_theme(self):
         self.theme = choice(self.challenge.themes, None)
         if self.theme:
             logger.info(f'> Selected theme: {self.theme.name}')
-            result.update(self.theme)
+            self._add_layer(self.theme)
 
+    def _add_layer(self, layer):
+        logger.info(f'> Adding layer: {layer.name}')
+        self.result.update(other_layer=layer)
+
+    def _collapse_layers(self):
+        from models.mod import mods_by_name
         for layer in self.challenge.layers:
             if type(layer) is list:
                 layer = choice(layer, None)
-            result.update(layer)
+            self._add_layer(layer)
 
-        for layer in self.layers:
-            result.update(layer)
+        self.result.terrain_mod = choice(self.result.terrain_mod, mods_by_name.get('Vanilla'))
+        self.result.village_mod = choice(self.result.village_mod, mods_by_name.get('Vanilla'))
+        self.result.add_mod(self.result.terrain_mod)
+        self.result.add_mod(self.result.village_mod)
 
-        result.terrain_mod = choice(result.terrain_mod, mods_by_name.get('Vanilla'))
-        result.village_mod = choice(result.village_mod, mods_by_name.get('Vanilla'))
-
-        result.add_mod(result.terrain_mod)
-        result.add_mod(result.village_mod)
-
-        # Generate sidequest metadata
-        sq: Sidequest
-        for sq in self.challenge.sidequests:
-            if bool(random.getrandbits(1)):
-                # Skip any per-player sidequests if we don't have at least 2 players
-                if sq.players_upfront and (not players or len(players) < 2):
-                    continue
-                sq_meta = sq.generate(players)
-                self.meta_by_sidequest[sq] = sq_meta
-                for layer in sq.layers:
-                    result.update(layer)
-
-        # Commit to a version
+    def _select_loader_and_version(self):
         # TODO: consider stripping the patch version for more overlap
-        result.fetch_metadata()
 
+        from models.mod import Mod
+        self.result.fetch_metadata()
         mods_by_version = {}
         mod: Mod
-        for mod in result.mods:
+        for mod in self.result.mods:
             for version in mod.sources_by_version.keys():
                 mods_by_version.setdefault(version, []).append(mod.name)
 
@@ -91,9 +70,55 @@ class ModPack:
                 best = version, score
 
         self.version = best[0]
-        for mod in result.mods:
+        for mod in self.result.mods:
             if self.version in mod.sources_by_version.keys():
                 self.sources_by_mod[mod] = mod.sources_by_version.get(self.version)
+
+    def _select_sidequests(self,
+                           players: list = None):
+        from models import sidequest
+        sidequest.fetch_metadata()
+
+        # Step 1: weed out the sidequests that can't fit in the main quest
+        compatibles = []
+        sq: sidequest.Sidequest
+        for sq in self.challenge.sidequests:
+            if sq.is_compatible_with(self.version):
+                compatibles.append(sq)
+
+        # Step 2: choose up to 3 randomly
+        chosen = 0
+        for sq in compatibles:
+            # Skip any per-player sidequests if we don't have at least 2 players
+            if sq.players_upfront and (not players or len(players) < 2):
+                continue
+
+            # Flip a coin for whether this one is chosen
+            if bool(random.getrandbits(1)):
+                chosen += 1
+                sq_meta = sq.generate(players)
+                self.meta_by_sidequest[sq] = sq_meta
+                for layer in sq.layers:
+                    self._add_layer(layer)
+                    for mod in layer.mods:
+                        self.sources_by_mod[mod] = mod.sources_by_version.get(self.version)
+                if chosen == 3:
+                    break
+
+    def collapse(self,
+                 players: list = None):
+        """
+        Takes all layers added and collapses them into a single layer.
+        Ensures only one of each of these:
+        - Terrain mod
+        - Village mod
+
+        :return:
+        """
+        self._select_theme()
+        self._collapse_layers()
+        self._select_loader_and_version()
+        self._select_sidequests(players)
 
     def to_json(self) -> dict:
         sq_objs = []

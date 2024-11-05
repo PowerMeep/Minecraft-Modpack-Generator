@@ -33,6 +33,7 @@ This is needed to generate player-specific configurations.
 - [ ] Seed the randomness
 - [ ] Figure out modrinth multiple project scrape
 - [ ] Make the pretty version table
+- [ ] Include hardcore in json
 - [x] Show the scenario names, not just the challenge types
 - [x] Ability to look up mod metadata from a url
 - [x] Get loaders and versions from responses
@@ -45,8 +46,7 @@ This is needed to generate player-specific configurations.
   - [ ] Requiredness
   - [ ] Mod Configs
   - [ ] Layer Configs?
-- [ ] Remove sidequests when all of their mods have been removed
-  - [ ] Sidequests are aware of requiredness
+- [x] Remove sidequests when all of their mods have been removed
 - [x] Retrieve and store more CF data
   - [x] Official name
   - [x] Friendly url

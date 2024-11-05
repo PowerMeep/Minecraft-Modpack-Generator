@@ -42,7 +42,6 @@ class Layer:
             return
         if other_layer == layers_by_name.get('Vanilla'):
             return
-        logger.info(f'> Adding layer: {other_layer.name}')
         if other_layer.terrain_mod and not self.terrain_mod:
             self.terrain_mod = other_layer.terrain_mod
         if other_layer.village_mod and not self.village_mod:
