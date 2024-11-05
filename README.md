@@ -146,8 +146,8 @@ Cons
   - Determine whether CF can do this automatically
 - [x] Generate manifest.json
 - [x] Generate modlist.html
-- [ ] Generate overrides from layers
-- [ ] Generate final zip file
+- [x] Generate overrides from layers
+- [x] Generate final zip file
 - [ ] Zip file can be downloaded from a url
 - [ ] Attach client zip file to Discord message
 

@@ -192,16 +192,63 @@ class ModPack:
         return out
 
     def generate_modpack_zip(self) -> str:
-        # TODO: implement
+        import json
+        import os
+        import re
+        import shutil
+        import time
+
         # create temp directory
+        temp_dir = 'temp'
+        build_dir = 'build'
+        os.makedirs(temp_dir, 0o755, exist_ok=True)
+
+        # create build directories
+        output_name = f'{round(time.time() * 1000)}-{self.get_name()}-client'
+        temp_output_dir = f'{temp_dir}/{output_name}'
+        temp_output_overrides_dir = f'{temp_output_dir}/overrides'
+        os.makedirs(temp_output_dir, 0o755,  False)
+        os.makedirs(temp_output_overrides_dir, 0o755, False)
+
         # dump modlist to file
+        with open(f'{temp_output_dir}/modlist.html', 'w') as f:
+            f.write(self.generate_modlist_html())
+
         # dump manifest to file
-        # create overrides directory
-        # copy in all overrides one at a time
-        # compress final file
-        # delete source directory
-        # return filename
-        pass
+        with open(f'{temp_output_dir}/manifest.json', 'w') as f:
+            json.dump(self.generate_manifest_json(), fp=f, indent=4)
+
+        for override in self.result.overrides:
+            # If there is a mod on the list that we don't have, skip
+            for mod in override.mods:
+                if mod not in self.sources_by_mod:
+                    continue
+            # If the version doesn't match, skip
+            if not re.match(override.versions, self.version):
+                continue
+
+            # Copy the override
+            try:
+                shutil.copytree(
+                    src=f'data/overrides/{override.path}',
+                    dst=temp_output_overrides_dir,
+                    dirs_exist_ok=True
+                )
+            except:
+                logger.error(f'Unable to copy override: {override.path}')
+        shutil.make_archive(
+            base_name=output_name,
+            format='zip',
+            base_dir='.',
+            root_dir=temp_output_dir
+        )
+        os.makedirs(build_dir, 0o755, exist_ok=True)
+        shutil.move(
+            src=f'{output_name}.zip',
+            dst=f'{build_dir}/{output_name}.zip'
+        )
+        shutil.rmtree(temp_output_dir)
+        return f'{build_dir}/{output_name}.zip'
 
 
 def generate(players=None) -> ModPack:

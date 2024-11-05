@@ -124,7 +124,7 @@ dmypy.json
 .pyre/
 
 # Files generated at runtime
-# data/
+temp/
 
 # IDE files that change frequently
 .idea/
