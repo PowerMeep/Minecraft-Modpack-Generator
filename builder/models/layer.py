@@ -1,7 +1,7 @@
 import logging
 logger = logging.getLogger()
 
-_validation_data = {
+_layer_validation_data = {
     'name': (str, True),
     'description': (str, False),
     'mods': (list, False),
@@ -9,7 +9,24 @@ _validation_data = {
     'village_mod': (list, False)
 }
 
+_override_validation_data = {
+    'mods': (list, False),
+    'versions': (str, False),
+    'path': (str, True)
+}
+
+
 json_path = 'data/layers.json'
+
+
+class Override:
+    def __init__(self,
+                 path=str,
+                 mods=None,
+                 versions=None):
+        self.mods = mods or []
+        self.versions = versions or []
+        self.path = path
 
 
 class Layer:
@@ -18,12 +35,14 @@ class Layer:
                  description='A layer of mods',
                  terrain_mod=None,
                  village_mod=None,
-                 mods=None):
+                 mods=None,
+                 overrides=None):
         self.name = name
         self.description = description
         self.terrain_mod = terrain_mod
         self.village_mod = village_mod
         self.mods = mods or []
+        self.overrides = overrides or []
 
     def __str__(self):
         return self.name
@@ -48,6 +67,7 @@ class Layer:
             self.village_mod = other_layer.village_mod
         for mod in other_layer.mods:
             self.add_mod(mod)
+        self.overrides.extend(other_layer.overrides)
 
     def _cache_fetch_curseforge(self):
         from models.mod import Mod, CFMetadata, CFSource
@@ -137,11 +157,37 @@ def _get_mods(element):
     )
 
 
+def _get_overrides(overrides, mod_name):
+    if overrides is None:
+        return None
+    out = []
+    from models.load_util import validate_type
+    for obj in overrides:
+        errors = validate_type(
+            mod_name,
+            _override_validation_data,
+            obj
+        )
+        if errors:
+            for error in errors:
+                logger.error(error)
+            continue
+
+        out.append(
+            Override(
+                mods=obj.get('mods'),
+                versions=obj.get('versions'),
+                path=obj.get('path')
+            )
+        )
+    return out
+
+
 def from_json(obj: dict):
     from models.load_util import validate_type
     errors = validate_type(
         obj.get('name'),
-        _validation_data,
+        _layer_validation_data,
         obj
     )
     if errors:
@@ -155,7 +201,8 @@ def from_json(obj: dict):
         description=obj.get('description'),
         terrain_mod=_get_mods(obj.get('terrain_mod')),
         village_mod=_get_mods(obj.get('village_mod')),
-        mods=_get_mods(obj.get('mods'))
+        mods=_get_mods(obj.get('mods')),
+        overrides=_get_overrides(obj.get('overrides'), obj.get('name'))
     )
     layers_by_name[l.name] = l
 

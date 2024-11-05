@@ -5,7 +5,7 @@ from models.modpack import generate
 
 import disnake
 from disnake.ext import commands
-from disnake import SelectOption, ButtonStyle, InteractionResponse, Embed
+from disnake import SelectOption, ButtonStyle, Embed
 from disnake.ui import StringSelect, ActionRow, Button
 
 logger = logging.getLogger()
@@ -65,8 +65,7 @@ states_by_user = {}
     description='Generate a Minecraft Modpack'
 )
 async def build_modpack(inter: disnake.ApplicationCommandInteraction):
-    response: InteractionResponse = inter.response
-    await response.defer(
+    await inter.response.defer(
         with_message=False,
         ephemeral=True
     )

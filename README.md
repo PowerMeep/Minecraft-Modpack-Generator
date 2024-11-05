@@ -29,6 +29,10 @@ This is needed to generate player-specific configurations.
 ## Roadmap
 
 ### General TODO:
+- [ ] Add gravity sidequest
+- [ ] Add skyblock theme
+- [ ] Dawn Era
+- [ ] Rename "roughin it"
 - [ ] Implement compats
 - [ ] Seed the randomness
 - [ ] Figure out modrinth multiple project scrape
@@ -40,8 +44,6 @@ This is needed to generate player-specific configurations.
 - [x] Auto choose the configuration that gets the most mods
 - [x] Cache api calls
 - [x] Validate JSON files when reading them in
-- [ ] Multiple CF ids for split projects (forge/fabric)
-  - Alternatively, separate mods for each, then add both to the layer
 - [ ] Layer-Mod link has more data
   - [ ] Requiredness
   - [ ] Mod Configs

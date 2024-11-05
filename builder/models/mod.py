@@ -35,10 +35,6 @@ _validation_data = {
 
 
 class CFMetadata:
-    display_name: str
-    website_url: str
-    author: str
-
     def __init__(self,
                  display_name: str = None,
                  website_url: str = None,
@@ -61,11 +57,6 @@ class CFMetadata:
 
 
 class CFSource:
-    file_id: str
-    file_name: str
-    download_url: str
-    dependencies: list
-
     def __init__(self,
                  file_id: str = None,
                  file_name: str = None,

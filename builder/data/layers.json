@@ -79,6 +79,13 @@
     "mods": [
       "Cobblemon",
       "Bad Mobs"
+    ],
+    "overrides": [
+      {
+        "mods": ["Bad Mobs"],
+        "versions": ".*",
+        "path": "bad-mobs/no-monsters"
+      }
     ]
   },
   {
@@ -183,6 +190,18 @@
       "Mob Sunscreen",
       "Configurable Extra Mob Drops",
       "Bad Mobs"
+    ],
+    "overrides": [
+      {
+        "mods": ["Bad Mobs"],
+        "versions": ".*",
+        "path": "bad-mobs/only-zombies"
+      },
+      {
+        "mods": ["Configurable Extra Mob Drops"],
+        "versions": ".*",
+        "path": "configurable-extra-mob-drops/zombies-drop-all"
+      }
     ]
   },
   {
@@ -244,6 +263,13 @@
       "Exotic Birds",
       "Bad Mobs",
       "Aquaculture 2"
+    ],
+    "overrides": [
+      {
+        "mods": ["Bad Mobs"],
+        "versions": ".*",
+        "path": "bad-mobs/no-monsters"
+      }
     ]
   },
   {
@@ -251,12 +277,26 @@
     "mods": [
       "Lycanites Mobs",
       "Bad Mobs"
+    ],
+    "overrides": [
+      {
+        "mods": ["Bad Mobs"],
+        "versions": ".*",
+        "path": "bad-mobs/lycanites-only"
+      }
     ]
   },
   {
     "name": "Sunburn",
     "mods": [
       "Burn in the Sun"
+    ],
+    "overrides": [
+      {
+        "mods": ["Burn in the Sun"],
+        "versions": ".*",
+        "path": "burn-in-the-sun/players-burn"
+      }
     ]
   },
   {
