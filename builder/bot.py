@@ -181,8 +181,10 @@ async def regenerate(inter: disnake.MessageInteraction,
 async def send(inter: disnake.MessageInteraction,
                state: BuilderState):
     await state.message.delete()
+    filepath = state.modpack.generate_modpack_zip()
     await inter.response.send_message(
-        embed=state.to_embed()
+        embed=state.to_embed(),
+        file=disnake.File(filepath)
     )
     desc_by_name = {}
     for sq, meta in state.modpack.meta_by_sidequest.items():

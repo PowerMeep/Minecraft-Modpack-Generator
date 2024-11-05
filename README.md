@@ -44,10 +44,6 @@ This is needed to generate player-specific configurations.
 - [x] Auto choose the configuration that gets the most mods
 - [x] Cache api calls
 - [x] Validate JSON files when reading them in
-- [ ] Layer-Mod link has more data
-  - [ ] Requiredness
-  - [ ] Mod Configs
-  - [ ] Layer Configs?
 - [x] Remove sidequests when all of their mods have been removed
 - [x] Retrieve and store more CF data
   - [x] Official name
@@ -55,70 +51,6 @@ This is needed to generate player-specific configurations.
   - [x] File Id
   - [x] Dependencies
   - [ ] Modloader data
-
-
-
-
-
-Multiple mod configs:
-- Configs need to be aware of which versions they support (with wildcards)
-- A mod may have multiple configs, a config may have multiple versions
-
-
-**Option 1: Mods with different configs are defined as different mods**
-
-Pros
-+ Layers just reference which mod they want
-+ Layers are able to reuse the same configs
-+ Mods that are dropped before the final result will also drop their configs
-
-Cons
-- Duplicates mod definitions
-
-**Option 2: Mods define their own configs**
-
-Pros
-+ Layers are able to reuse the same configs
-+ Mods that are dropped before the final result will also drop their configs
-+ No duplication
-
-Cons
-- Layers reference mods and their configs
-
-**Option 3: Layers define configs (mod level)**
-
-Pros
-+ More cohesive configs, knowing what other mods will be included (?)
-+ Mods that are dropped before the final result will also drop their configs
-
-Cons
-- Some configs may be duplicated with other layers'
-
-
-**Option 4: Layers define configs (layer level)**
-
-Pros
-+ More cohesive configs, knowing what other mods will be included
-
-Cons
-- Some configs may be duplicated with other layers'
-- Some mods may be dropped from the final result, but the configs would be kept
-
---
-
-**Option: Mods had different entries for each config**
-- Layers reference the mod-config they want
-- Layers also define their own configs
-- Layer configs are applied on top of mod configs
-
-**Option:**
-- Configs are defined separately
-- Layers... ??
-- This one might just be too complicated
-
-
-
-
 
 
 ### Milestone 1
@@ -148,8 +80,10 @@ Cons
 - [x] Generate modlist.html
 - [x] Generate overrides from layers
 - [x] Generate final zip file
+- [x] Attach client zip file to Discord message
 - [ ] Zip file can be downloaded from a url
-- [ ] Attach client zip file to Discord message
+  - Is this necessary?
+  - Every page refresh would have to generate a zip and attach a link to it
 
 ### Milestone 4
 **The builder is able to automatically start a Minecraft server.**
