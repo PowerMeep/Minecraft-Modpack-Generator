@@ -69,7 +69,7 @@ class ModPack:
         mods_by_version = {}
         mod: Mod
         for mod in result.mods:
-            for version in mod.sources.keys():
+            for version in mod.sources_by_version.keys():
                 mods_by_version.setdefault(version, []).append(mod.name)
 
         best = None
@@ -82,8 +82,8 @@ class ModPack:
 
         self.version = best[0]
         for mod in result.mods:
-            if self.version in mod.sources.keys():
-                self.sources_by_mod[mod] = mod.sources.get(self.version)
+            if self.version in mod.sources_by_version.keys():
+                self.sources_by_mod[mod] = mod.sources_by_version.get(self.version)
 
     def to_json(self) -> dict:
         sq_objs = []
@@ -96,8 +96,8 @@ class ModPack:
         mod_objs = []
         for mod, source in self.sources_by_mod.items():
             mod_obj = {
-                'mod': mod.name,
-                'url': source
+                'mod': mod.curseforge_meta.display_name,
+                'url': mod.curseforge_meta.website_url
             }
             mod_objs.append(mod_obj)
 
@@ -107,6 +107,65 @@ class ModPack:
             'sidequests': sq_objs,
             'mods': mod_objs
         }
+
+    def pull_dependencies(self) -> str:
+        # TODO: implement
+        # iterate over all mod file dependencies
+        # what does the number mean?
+        # do these need to be stored in the same way as the others?
+        pass
+
+    def generate_modlist_html(self) -> str:
+        out = ['<ul>']
+        for mod in self.sources_by_mod.keys():
+            out.append(f'<li><a href="{mod.curseforge_meta.website_url}">{mod.curseforge_meta.display_name} (by {mod.curseforge_meta.author})</li>')
+        out.append('</ul>')
+        return '\n'.join(out)
+
+    def generate_manifest_json(self) -> dict:
+        files = []
+        for mod, source in self.sources_by_mod.items():
+            files.append({
+                'projectID': mod.curseforge_id,
+                'fileID': source.file_id,
+                'required': True
+            })
+
+        # TODO: need a version for the modloader
+        # "forge-40.2.10"
+        tokens = self.version.split('-')
+        out = {
+            'minecraft': {
+                'version': tokens[0],
+                'modLoaders': [
+                    {
+                        'id': tokens[1],
+                        'primary': True
+                    }
+                ]
+            },
+            'manifestType': 'minecraftModpack',
+            'manifestVersion': 1,
+            'name': self.challenge.name,
+            'version': 1,
+            'author': 'buildbot',
+            'files': files,
+            'overrides': 'overrides'
+        }
+
+        return out
+
+    def generate_modpack_zip(self) -> str:
+        # TODO: implement
+        # create temp directory
+        # dump modlist to file
+        # dump manifest to file
+        # create overrides directory
+        # copy in all overrides one at a time
+        # compress final file
+        # delete source directory
+        # return filename
+        pass
 
 
 def generate(players=None) -> ModPack:

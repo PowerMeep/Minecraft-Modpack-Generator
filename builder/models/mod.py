@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, timezone
 import logging
 import os
@@ -25,40 +26,108 @@ table_sources = 'sources'
 key_name = 'name'
 key_date = 'date'
 key_version = 'version'
-key_url = 'url'
+key_metadata = 'metadata'
 
 _validation_data = {
     'name': (str, True),
-    'curseforge_id': (int, False),
-    'modrinth_slug': (str, False)
+    'curseforge_id': (int, False)
 }
+
+
+class CFMetadata:
+    display_name: str
+    website_url: str
+    author: str
+
+    def __init__(self,
+                 display_name: str = None,
+                 website_url: str = None,
+                 author: str = None):
+        self.display_name = display_name
+        self.website_url = website_url
+        self.author = author
+
+    def from_json(self, obj):
+        self.display_name = obj.get('display_name')
+        self.website_url = obj.get('website_url')
+        self.author = obj.get('author')
+
+    def to_json(self):
+        return json.dumps({
+            'display_name': self.display_name,
+            'website_url': self.website_url,
+            'author': self.author
+        })
+
+
+class CFSource:
+    file_id: str
+    file_name: str
+    download_url: str
+    dependencies: list
+
+    def __init__(self,
+                 file_id: str = None,
+                 file_name: str = None,
+                 download_url: str = None,
+                 dependencies: list = None):
+        self.file_id = file_id
+        self.file_name = file_name
+        self.download_url = download_url
+        self.dependencies = dependencies or []
+
+    def from_json(self, obj):
+        self.file_id = obj.get('file_id')
+        self.file_name = obj.get('file_name')
+        self.download_url = obj.get('download_url')
+        self.dependencies = obj.get('dependencies')
+
+    def to_json(self):
+        return json.dumps({
+            'file_id': self.file_id,
+            'file_name': self.file_name,
+            'download_url': self.download_url,
+            'dependencies': self.dependencies
+        })
 
 
 class Mod:
     def __init__(self,
                  name,
-                 curseforge_id: int = None,
-                 modrinth_slug: str = None):
+                 curseforge_id: int = None):
+        # The id of this mod, relative to this application
         self.name = name
+
+        # The id of this mod on curseforge
         self.curseforge_id = curseforge_id
-        self.modrinth_slug = modrinth_slug
+
+        # The metadata retrieved from CF
+        self.curseforge_meta = None
+
+        # Information for the most recent artifacts
+        self.sources_by_version = {}
+
+        # The last time this mod's data was updated
         self.last_update = None
-        self.sources = {}
 
     def clear_sources(self):
-        self.sources.clear()
+        self.sources_by_version.clear()
 
     def add_source(self,
-                   loader: str,
-                   mc_version: str,
-                   url: str):
-        key = f'{loader}-{mc_version}'
-        existing = self.sources.get(key)
-        if not existing or existing < url:
-            self.sources[key] = url
-            logger.info(f'Added source: {key}: {url}')
+                   key: str,
+                   source: CFSource):
+        existing = self.sources_by_version.get(key)
+        if not existing:
+            self.sources_by_version[key] = source
+            logger.info(f'Added source: {key}: {source.download_url}')
         else:
-            logger.debug(f'Existing source is more recent: {key}: {url} < {existing}')
+            existing_order = existing.file_name
+            source_order = source.file_name
+            if existing_order < source_order:
+                self.sources_by_version[key] = source
+                logger.info(f'Updated source: {key}: {source.download_url}')
+            else:
+                logger.debug(f'Existing source is more recent: {key}: {source_order} < {existing_order}')
 
     def is_stale(self):
         if self.last_update is None:
@@ -73,19 +142,23 @@ class Mod:
         self.last_update = datetime.now(timezone.utc)
         time_str = datetime.strftime(self.last_update, time_format)
         connection = sqlite3.connect(db_name)
+        out = None
+        if self.curseforge_meta:
+            out = self.curseforge_meta.to_json()
         connection.execute(
-            f"INSERT INTO {table_timestamps}({key_name}, {key_date}) VALUES(?, ?)\n"
-            f"ON CONFLICT({key_name}) DO UPDATE SET {key_date}=?;",
-            [self.name, time_str, time_str]
+            f"INSERT INTO {table_timestamps}({key_name}, {key_date}, {key_metadata}) VALUES(?, ?, ?)\n"
+            f"ON CONFLICT({key_name}) DO UPDATE SET {key_date}=?, {key_metadata}=?;",
+            [self.name, time_str, out, time_str, out]
         )
         connection.commit()
 
-        for version, url in self.sources.items():
+        for version, metadata in self.sources_by_version.items():
+            out = metadata.to_json()
             connection.execute(
-                f"INSERT INTO {table_sources}({key_name}, {key_version}, {key_url})"
+                f"INSERT INTO {table_sources}({key_name}, {key_version}, {key_metadata})"
                 f"  VALUES(?, ?, ?)\n"
-                f"ON CONFLICT({key_name}, {key_version}) DO UPDATE SET {key_url}=?;",
-                [self.name, version, url, url]
+                f"ON CONFLICT({key_name}, {key_version}) DO UPDATE SET {key_metadata}=?;",
+                [self.name, version, out, out]
             )
         connection.commit()
         connection.close()
@@ -113,8 +186,7 @@ def from_json(obj: dict):
 
     m = Mod(
         name=obj.get('name'),
-        curseforge_id=obj.get('curseforge_id'),
-        modrinth_slug=obj.get('modrinth_slug')
+        curseforge_id=obj.get('curseforge_id')
     )
     logger.info(f'Loaded mod: {m.name}')
     mods_by_name[m.name] = m
@@ -130,15 +202,16 @@ def _setup_cache():
     connection = sqlite3.connect(db_name)
     connection.execute(
         f'CREATE TABLE IF NOT EXISTS {table_timestamps}(\n'
-        f'  {key_name} TEXT PRIMARY KEY,\n'
-        f'  {key_date} TEXT NOT NULL\n'
+        f'  {key_name}     TEXT PRIMARY KEY,\n'
+        f'  {key_date}     TEXT NOT NULL,\n'
+        f'  {key_metadata} TEXT NOT NULL\n'
         ');'
     )
     connection.execute(
         f'CREATE TABLE IF NOT EXISTS {table_sources}(\n'
-        f'  {key_name}    TEXT NOT NULL,\n'
-        f'  {key_version} TEXT NOT NULL,\n'
-        f'  {key_url}     TEXT NOT NULL,\n'
+        f'  {key_name}     TEXT NOT NULL,\n'
+        f'  {key_version}  TEXT NOT NULL,\n'
+        f'  {key_metadata} TEXT NOT NULL,\n'
         f'  PRIMARY KEY ({key_name}, {key_version}),\n'
         f'  CONSTRAINT fk_name\n'
         f'    FOREIGN KEY ({key_name})\n'
@@ -162,26 +235,29 @@ def load_cached_sources():
     for row in fetch_time_rows:
         name = row[0]
         date = row[1]
+        meta = json.loads(row[2])
         mod: Mod = mods_by_name.get(name)
         if mod is None:
             mods_not_found.add(name)
         else:
             mod.last_update = datetime.strptime(date, time_format)
+            mod.curseforge_meta = CFMetadata()
+            mod.curseforge_meta.from_json(meta)
 
     sources_rows = cursor.execute(f'SELECT * FROM {table_sources};')
     for row in sources_rows:
         name    = row[0]
         version = row[1]
-        url     = row[2]
+        meta    = json.loads(row[2])
         if name in mods_not_found:
             continue
 
         mod: Mod = mods_by_name.get(name)
-        tokens = version.split('-')
+        source = CFSource()
+        source.from_json(meta)
         mod.add_source(
-            loader=tokens[0],
-            mc_version=tokens[1],
-            url=url
+            key=version,
+            source=source
         )
 
     if len(mods_not_found) > 0:

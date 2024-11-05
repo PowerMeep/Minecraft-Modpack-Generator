@@ -38,20 +38,20 @@ This is needed to generate player-specific configurations.
 - [x] Auto choose the configuration that gets the most mods
 - [x] Cache api calls
 - [x] Validate JSON files when reading them in
+- [ ] Multiple CF ids for split projects (forge/fabric)
+  - Alternatively, separate mods for each, then add both to the layer
 - [ ] Layer-Mod link has more data
   - [ ] Requiredness
   - [ ] Mod Configs
   - [ ] Layer Configs?
 - [ ] Remove sidequests when all of their mods have been removed
   - [ ] Sidequests are aware of requiredness
-- [ ] Retrieve and store more CF data
-  - Official name
-  - Friendly url
-  - File Id
-  - Dependencies
-  - Modloader data
-  - Overrides
-    - Configs
+- [x] Retrieve and store more CF data
+  - [x] Official name
+  - [x] Friendly url
+  - [x] File Id
+  - [x] Dependencies
+  - [ ] Modloader data
 
 
 
@@ -133,16 +133,23 @@ Cons
 - [x] Discord
   - [x] Generate and post a configuration
   - [x] DM players their specific configurations
-  - [ ] Discord post uses better links
+  - [x] Discord post uses better links
 
 ### Milestone 3
 **The builder is able to assemble zip files that can be imported by clients.**
-- [x] Ability to choose a loader and version
-- [ ] Some kind of local "registry" to copy already-downloaded files from
+- [x] Ability to choose a loader and minecraft version
+- [ ] Ability to choose a version for the loader
 - [ ] Account for mod dependencies (?)
+  - Determine whether CF can do this automatically
+- [x] Generate manifest.json
+- [x] Generate modlist.html
+- [ ] Generate overrides from layers
+- [ ] Generate final zip file
+- [ ] Zip file can be downloaded from a url
 - [ ] Attach client zip file to Discord message
 
 ### Milestone 4
 **The builder is able to automatically start a Minecraft server.**
+- [ ] Some kind of local "registry" to copy already-downloaded files from
 - [ ] Ability to generate a Docker Compose for the itzg image
 - [ ] Ability to create / stop / restart / destroy images using that compose

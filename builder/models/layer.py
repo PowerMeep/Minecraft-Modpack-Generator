@@ -50,50 +50,12 @@ class Layer:
         for mod in other_layer.mods:
             self.add_mod(mod)
 
-    def _batch_fetch_curseforge(self):
-        from models.mod import Mod
-        mods_by_id = {}
-        for mod in self.mods:
-            if mod.curseforge_id:
-                mods_by_id[mod.curseforge_id] = mod
-            else:
-                logger.error(f'Mod {mod.name} has no lookup criteria.')
-
-        from apis import curseforge
-        curseforge_response = curseforge.get_project_info(list(mods_by_id.keys()))
-        if curseforge_response.status_code != 200:
-            logger.error(f'Unable to get metadata from Curseforge: {curseforge_response.status_code}')
-        else:
-            for meta in curseforge_response.json().get('data'):
-                mod: Mod = mods_by_id.get(meta.get('id'))
-                for file in meta.get('latestFiles'):
-                    loaders = []
-                    game_version = None
-                    for version in file.get('gameVersions'):
-                        if version[0].isdigit():
-                            game_version = version
-                        else:
-                            loaders.append(version)
-                    if game_version is None:
-                        logger.error('Could not determine version for file')
-                        continue
-
-                    if len(loaders) == 0:
-                        loaders = ['Forge']
-
-                    for loader in loaders:
-                        mod.add_source(
-                            loader=loader,
-                            mc_version=game_version,
-                            url=file.get('downloadUrl')
-                        )
-            # import json
-            # print(json.dumps(meta.get('latestFiles'), indent=3))
-
     def _cache_fetch_curseforge(self):
-        from models.mod import Mod
+        from models.mod import Mod, CFMetadata, CFSource
         from apis import curseforge
+
         mod: Mod
+        mods_by_id = {}
         for mod in self.mods:
             if mod.curseforge_id is None:
                 logger.error(f'{mod.name} has no Curseforge Id')
@@ -103,16 +65,34 @@ class Layer:
                 logger.debug(f'{mod.name} sources are recent enough')
                 continue
             else:
-                logger.warning(f'{mod.name} sources are stale and will be updated')
-                mod.clear_sources()
+                mods_by_id[mod.curseforge_id] = mod
 
-            response = curseforge.get_files(mod.curseforge_id)
+        if len(mods_by_id) == 0:
+            return
 
-            if response.status_code != 200:
-                logger.error(f'Could not fetch files for {mod.name}: {response.status_code}')
+        logger.warning(f'{len(mods_by_id)} mods are stale and will be updated')
+        infos_response = curseforge.get_project_info(list(mods_by_id.keys()))
+        if infos_response.status_code != 200:
+            logger.error(f'Could not fetch info: {infos_response.status_code}')
+            return
+        else:
+            info_datas = infos_response.json().get('data')
+            for info_data in info_datas:
+                mod = mods_by_id.get(info_data.get('id'))
+                mod.curseforge_meta = CFMetadata(
+                    display_name=info_data.get('name'),
+                    website_url=info_data.get('links').get('websiteUrl')
+                )
+
+        for mod in mods_by_id.values():
+            logger.warning(f'Updating sources for {mod.name}...')
+            files_response = curseforge.get_files(mod.curseforge_id)
+            if files_response.status_code != 200:
+                logger.error(f'Could not fetch files for {mod.name}: {files_response.status_code}')
                 continue
 
-            for file in response.json().get('data'):
+            mod.clear_sources()
+            for file in files_response.json().get('data'):
                 loaders = []
                 game_version = None
                 for version in file.get('gameVersions'):
@@ -129,14 +109,17 @@ class Layer:
 
                 for loader in loaders:
                     mod.add_source(
-                        loader=loader,
-                        mc_version=game_version,
-                        url=file.get('downloadUrl')
+                        key=f'{loader}-{game_version}',
+                        source=CFSource(
+                            file_id=file.get('id'),
+                            file_name=file.get('fileName'),
+                            download_url=file.get('downloadUrl'),
+                            dependencies=file.get('dependencies')
+                        )
                     )
             mod.save_sources()
 
     def fetch_metadata(self):
-        # self._batch_fetch_curseforge()
         self._cache_fetch_curseforge()
 
 

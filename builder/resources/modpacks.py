@@ -9,5 +9,13 @@ async def get():
         players = body.get('players') or []
     else:
         players = request.args.getlist('player')
+
     modpack = generate(players)
-    return modpack.to_json()
+
+    response = request.args.get('response', str)
+    if response == 'modlist':
+        return modpack.generate_modlist_html()
+    elif response == 'manifest':
+        return modpack.generate_manifest_json()
+    else:
+        return modpack.to_json()

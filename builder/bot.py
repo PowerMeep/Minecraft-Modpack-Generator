@@ -37,8 +37,8 @@ class BuilderState:
                 desc.append(f'- <@{player.id}>')
 
         desc.append(f'### Mods ({self.modpack.version})')
-        for mod, source in self.modpack.sources_by_mod.items():
-            desc.append(f'- [{mod.name}]({source})')
+        for mod in self.modpack.sources_by_mod.keys():
+            desc.append(f'- [{mod.curseforge_meta.display_name}]({mod.curseforge_meta.website_url})')
 
         if len(self.modpack.meta_by_sidequest) > 0:
             desc.append('### Sidequests')
