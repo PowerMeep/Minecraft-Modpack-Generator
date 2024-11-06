@@ -19,6 +19,7 @@ class ModPack:
         self.challenge = None
         self.version = None
         self.theme = None
+        self.modloader = None
         self.result = Layer()
         self.sources_by_mod = {}
         self.meta_by_sidequest = {}
@@ -73,6 +74,11 @@ class ModPack:
         for mod in self.result.mods:
             if self.version in mod.sources_by_version.keys():
                 self.sources_by_mod[mod] = mod.sources_by_version.get(self.version)
+
+        from apis import curseforge
+        self.modloader = curseforge.get_recommended_modloader(self.version)
+        if not self.modloader:
+            logger.error(f'Unable to get a recommended loader for version {self.version}')
 
     def _select_sidequests(self,
                            players: list = None):
@@ -167,15 +173,12 @@ class ModPack:
                 'required': True
             })
 
-        # TODO: need a version for the modloader
-        # "forge-40.2.10"
-        tokens = self.version.split('-')
         out = {
             'minecraft': {
-                'version': tokens[0],
+                'version': self.version,
                 'modLoaders': [
                     {
-                        'id': tokens[1],
+                        'id': self.modloader,
                         'primary': True
                     }
                 ]

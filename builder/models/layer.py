@@ -105,37 +105,30 @@ class Layer:
 
         for mod in mods_by_id.values():
             logger.warning(f'Updating sources for {mod.name}...')
-            files_response = curseforge.get_files(mod.curseforge_id)
-            if files_response.status_code != 200:
-                logger.error(f'Could not fetch files for {mod.name}: {files_response.status_code}')
+            files = curseforge.get_files(mod.curseforge_id)
+            if not files:
+                logger.error(f'Could not fetch files for {mod.name}')
                 continue
 
             mod.clear_sources()
-            for file in files_response.json().get('data'):
-                loaders = []
+            for file in files:
                 game_version = None
                 for version in file.get('gameVersions'):
                     if version[0].isdigit():
                         game_version = version
-                    else:
-                        loaders.append(version)
                 if game_version is None:
                     logger.error('Could not determine version for file')
                     continue
 
-                if len(loaders) == 0:
-                    loaders = ['Forge']
-
-                for loader in loaders:
-                    mod.add_source(
-                        key=f'{loader}-{game_version}',
-                        source=CFSource(
-                            file_id=file.get('id'),
-                            file_name=file.get('fileName'),
-                            download_url=file.get('downloadUrl'),
-                            dependencies=file.get('dependencies')
-                        )
+                mod.add_source(
+                    key=game_version,
+                    source=CFSource(
+                        file_id=file.get('id'),
+                        file_name=file.get('fileName'),
+                        download_url=file.get('downloadUrl'),
+                        dependencies=file.get('dependencies')
                     )
+                )
             mod.save_sources()
 
     def fetch_metadata(self):

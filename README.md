@@ -50,7 +50,7 @@ This is needed to generate player-specific configurations.
   - [x] Friendly url
   - [x] File Id
   - [x] Dependencies
-  - [ ] Modloader data
+  - [x] Modloader data
 
 
 ### Milestone 1
@@ -73,7 +73,7 @@ This is needed to generate player-specific configurations.
 ### Milestone 3
 **The builder is able to assemble zip files that can be imported by clients.**
 - [x] Ability to choose a loader and minecraft version
-- [ ] Ability to choose a version for the loader
+- [x] Ability to choose a version for the loader
 - [ ] Account for mod dependencies (?)
   - Determine whether CF can do this automatically
 - [x] Generate manifest.json
