@@ -7,6 +7,12 @@ WORKDIR /app
 # Expose this directory for overrides
 VOLUME /app/data
 
+# Temp build dir should always be empty
+VOLUME /app/temp
+
+# Build output directory
+VOLUME /app/build
+
 # Copy the application files into the working directory
 COPY builder/ .
 COPY requirements.txt .

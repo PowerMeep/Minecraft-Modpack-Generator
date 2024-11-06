@@ -84,6 +84,7 @@ This is needed to generate player-specific configurations.
 - [ ] Zip file can be downloaded from a url
   - Is this necessary?
   - Every page refresh would have to generate a zip and attach a link to it
+- [ ] Delete old files from temp and build
 
 ### Milestone 4
 **The builder is able to automatically start a Minecraft server.**
