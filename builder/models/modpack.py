@@ -1,9 +1,18 @@
 import logging
 import random
 
+import models.mod
 from models.layer import Layer
 
 logger = logging.getLogger()
+
+# RelationTypes
+rt_embedded = 1
+rt_optional_dep = 2
+rt_required_dep = 3
+rt_tool = 4
+rt_incompatible = 5
+rt_include = 6
 
 
 def choice(obj, default):
@@ -52,15 +61,16 @@ class ModPack:
         self.result.add_mod(self.result.village_mod)
 
     def _select_loader_and_version(self):
-        # TODO: consider stripping the patch version for more overlap
-
         from models.mod import Mod
         self.result.fetch_metadata()
         mods_by_version = {}
         mod: Mod
         for mod in self.result.mods:
             for version in mod.sources_by_version.keys():
-                mods_by_version.setdefault(version, []).append(mod.name)
+                # this block would only consider the major-minor numbers
+                # trimmed_version = '.'.join(version.split('.')[:2])
+                # mods_by_version.setdefault(trimmed_version, set()).add(mod)
+                mods_by_version.setdefault(version, set()).add(mod)
 
         best = None
         for version, mods in mods_by_version.items():
@@ -71,14 +81,20 @@ class ModPack:
                 best = version, score
 
         self.version = best[0]
+        logger.info(f'Selected version {self.version}')
         for mod in self.result.mods:
-            if self.version in mod.sources_by_version.keys():
-                self.sources_by_mod[mod] = mod.sources_by_version.get(self.version)
+            source = mod.get_best_source(self.version)
+            if source:
+                self.sources_by_mod[mod] = source
+            else:
+                logger.info(f'Dropping incompatible core mod: {mod.curseforge_id}')
 
         from apis import curseforge
         self.modloader = curseforge.get_recommended_modloader(self.version)
         if not self.modloader:
             logger.error(f'Unable to get a recommended loader for version {self.version}')
+        else:
+            logger.info(f'Selected modloader: {self.modloader}')
 
     def _select_sidequests(self,
                            players: list = None):
@@ -107,7 +123,7 @@ class ModPack:
                 for layer in sq.layers:
                     self._add_layer(layer)
                     for mod in layer.mods:
-                        self.sources_by_mod[mod] = mod.sources_by_version.get(self.version)
+                        self.sources_by_mod[mod] = mod.get_best_source(self.version)
                 if chosen == 3:
                     break
 
@@ -125,6 +141,14 @@ class ModPack:
         self._collapse_layers()
         self._select_loader_and_version()
         self._select_sidequests(players)
+        self.pull_dependencies()
+
+        # Fetch metadata and save changes
+        mod_ids = [m.curseforge_id for m in self.sources_by_mod.keys()]
+        logger.warning(f'Updating info for mods: {mod_ids}')
+        models.mod.fetch_info(mod_ids)
+        for m in self.sources_by_mod.keys():
+            m.save_sources()
 
     def to_json(self) -> dict:
         sq_objs = []
@@ -150,12 +174,40 @@ class ModPack:
             'mods': mod_objs
         }
 
-    def pull_dependencies(self) -> str:
-        # TODO: implement
-        # iterate over all mod file dependencies
-        # what does the number mean?
-        # do these need to be stored in the same way as the others?
-        pass
+    def _get_next_deps(self,
+                       sources,
+                       level: int = 0):
+        from models.mod import CFSource, mods_by_id, Mod
+        logger.warning(f'Pulling dependencies - level {level}')
+
+        dep_sources = []
+
+        source: CFSource
+        for source in sources:
+            for relation in source.dependencies:
+                if relation.get('relationType') == rt_required_dep:
+                    dep_id = relation.get('modId')
+                    m = mods_by_id.get(dep_id)
+                    need_fetch = True
+                    if m:
+                        if not m.is_stale():
+                            need_fetch = False
+                    else:
+                        m = Mod(name=None, curseforge_id=dep_id)
+                        mods_by_id[dep_id] = m
+                    if need_fetch:
+                        m.fetch_sources()
+                        m.save_sources()
+                    source = m.get_best_source(self.version)
+                    if not source:
+                        logger.error(f'Could not find version {self.version} for project {dep_id}')
+                    else:
+                        self.sources_by_mod[m] = source
+        if dep_sources:
+            self._get_next_deps(dep_sources, level+1)
+
+    def pull_dependencies(self):
+        self._get_next_deps(list(self.sources_by_mod.values()))
 
     def generate_modlist_html(self) -> str:
         out = ['<ul>']

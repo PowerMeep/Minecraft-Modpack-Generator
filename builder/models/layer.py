@@ -70,8 +70,7 @@ class Layer:
         self.overrides.extend(other_layer.overrides)
 
     def _cache_fetch_curseforge(self):
-        from models.mod import Mod, CFMetadata, CFSource
-        from apis import curseforge
+        from models.mod import Mod
 
         mod: Mod
         mods_by_id = {}
@@ -90,45 +89,9 @@ class Layer:
             return
 
         logger.warning(f'{len(mods_by_id)} mods are stale and will be updated')
-        infos_response = curseforge.get_project_info(list(mods_by_id.keys()))
-        if infos_response.status_code != 200:
-            logger.error(f'Could not fetch info: {infos_response.status_code}')
-            return
-        else:
-            info_datas = infos_response.json().get('data')
-            for info_data in info_datas:
-                mod = mods_by_id.get(info_data.get('id'))
-                mod.curseforge_meta = CFMetadata(
-                    display_name=info_data.get('name'),
-                    website_url=info_data.get('links').get('websiteUrl')
-                )
 
         for mod in mods_by_id.values():
-            logger.warning(f'Updating sources for {mod.name}...')
-            files = curseforge.get_files(mod.curseforge_id)
-            if not files:
-                logger.error(f'Could not fetch files for {mod.name}')
-                continue
-
-            mod.clear_sources()
-            for file in files:
-                game_version = None
-                for version in file.get('gameVersions'):
-                    if version[0].isdigit():
-                        game_version = version
-                if game_version is None:
-                    logger.error('Could not determine version for file')
-                    continue
-
-                mod.add_source(
-                    key=game_version,
-                    source=CFSource(
-                        file_id=file.get('id'),
-                        file_name=file.get('fileName'),
-                        download_url=file.get('downloadUrl'),
-                        dependencies=file.get('dependencies')
-                    )
-                )
+            mod.fetch_sources()
             mod.save_sources()
 
     def fetch_metadata(self):

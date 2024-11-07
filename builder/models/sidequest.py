@@ -96,7 +96,7 @@ class Sidequest:
         for layer in self.layers:
             # FIXME: this might break if the layer has nested lists
             for mod in layer.mods:
-                if version not in mod.sources_by_version:
+                if mod.get_best_source(version) is None:
                     return False
         return True
 

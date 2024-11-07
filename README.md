@@ -51,6 +51,11 @@ This is needed to generate player-specific configurations.
   - [x] File Id
   - [x] Dependencies
   - [x] Modloader data
+- [ ] Scenarios should have priority over other layers
+- [ ] Rather than store mod info in memory, just store the name > id lookup.
+  - [ ] Replace direct dict access with a method
+  - [ ] Allow lookup of multiple ids
+  - [ ] Replace guts of method with a cached lookup
 
 
 ### Milestone 1
@@ -74,8 +79,7 @@ This is needed to generate player-specific configurations.
 **The builder is able to assemble zip files that can be imported by clients.**
 - [x] Ability to choose a loader and minecraft version
 - [x] Ability to choose a version for the loader
-- [ ] Account for mod dependencies (?)
-  - Determine whether CF can do this automatically
+- [x] Account for mod dependencies
 - [x] Generate manifest.json
 - [x] Generate modlist.html
 - [x] Generate overrides from layers

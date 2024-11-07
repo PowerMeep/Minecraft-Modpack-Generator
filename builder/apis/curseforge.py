@@ -76,16 +76,31 @@ def get_files(project_id) -> list:
     :param project_id:
     :return:
     """
-    response = _make_request(
-        path=f'mods/{project_id}/files',
-        params={},
-        body=None
-    )
-    if response.status_code != 200:
-        return []
+    files = []
+    index = 0
+    while True:
+        response = _make_request(
+            path=f'mods/{project_id}/files',
+            params={
+                'index': index
+            },
+            body=None
+        )
+        if response.status_code != 200:
+            break
 
-    files = response.json().get('data')
-    return [f for f in files if 'Forge' in f.get('gameVersions')]
+        data = response.json().get('data')
+        for f in data:
+            if 'Forge' in f.get('gameVersions'):
+                files.append(f)
+
+        pagination = response.json().get('pagination')
+        total_count = pagination.get('totalCount')
+        if total_count < index + 50:
+            break
+        index += 50
+
+    return files
 
 
 def get_modloader_versions(version: str,

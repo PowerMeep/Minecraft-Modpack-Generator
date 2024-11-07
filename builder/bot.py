@@ -107,7 +107,11 @@ async def build_modpack(inter: disnake.ApplicationCommandInteraction):
     ]
 
     embed = Embed(
-        title='Build Modpack'
+        title='Build Modpack',
+        description=(
+            '**Select any players that will be joining.**\n\n'
+            '_Please be patient. Building can take a while._'
+        )
     )
 
     state.message = await inter.edit_original_response(
