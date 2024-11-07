@@ -1,8 +1,8 @@
 # Use the official Python image as the base image
 FROM python:3.12-slim-bullseye
-
-# Set the working directory in the container
+EXPOSE 8000
 WORKDIR /app
+CMD ["python3", "main.py"]
 
 # Expose this directory for overrides
 VOLUME /app/data
@@ -13,19 +13,13 @@ VOLUME /app/temp
 # Build output directory
 VOLUME /app/build
 
-# Copy the application files into the working directory
+# Copy stuff over
 COPY builder/ .
 COPY requirements.txt .
 
-# Install the application dependencies
-RUN apt-get update && apt-get upgrade -y
-RUN pip install -r requirements.txt
-
+# Set ENVs
 ENV CURSEFORGE_API_KEY=""
 ENV CACHE_STALE_TIME=""
 
-# Define the entry point for the container
-CMD ["python3", "main.py"]
-
-# This mostly just documents that this image will need this port exposed by the end user
-EXPOSE 8000
+# Install the application dependencies
+RUN pip install -r requirements.txt

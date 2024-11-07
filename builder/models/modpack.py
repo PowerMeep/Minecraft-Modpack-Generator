@@ -186,15 +186,16 @@ class ModPack:
         for source in sources:
             for relation in source.dependencies:
                 if relation.get('relationType') == rt_required_dep:
+                    need_fetch = True
+
                     dep_id = relation.get('modId')
                     m = mods_by_id.get(dep_id)
-                    need_fetch = True
-                    if m:
-                        if not m.is_stale():
-                            need_fetch = False
-                    else:
+                    if not m:
                         m = Mod(name=None, curseforge_id=dep_id)
                         mods_by_id[dep_id] = m
+                    elif not m.is_stale():
+                        need_fetch = False
+
                     if need_fetch:
                         m.fetch_sources()
                         m.save_sources()

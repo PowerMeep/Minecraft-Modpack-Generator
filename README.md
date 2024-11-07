@@ -51,7 +51,6 @@ This is needed to generate player-specific configurations.
   - [x] File Id
   - [x] Dependencies
   - [x] Modloader data
-- [ ] Scenarios should have priority over other layers
 - [ ] Rather than store mod info in memory, just store the name > id lookup.
   - [ ] Replace direct dict access with a method
   - [ ] Allow lookup of multiple ids
