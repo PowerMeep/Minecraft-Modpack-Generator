@@ -13,6 +13,8 @@ intents = disnake.Intents.default()
 intents.members = True
 client = commands.InteractionBot(intents=intents)
 
+url_issues = 'https://github.com/PowerMeep/Minecraft-Modpack-Generator/issues'
+
 id_member_select = 'member-select'
 id_do_generate = 'build-modpack'
 id_send_it = 'send-it'
@@ -111,10 +113,17 @@ async def build_modpack(inter: disnake.ApplicationCommandInteraction):
             max_values=len(options),
             options=options
         ),
-        Button(
-            style=ButtonStyle.green,
-            label='Build',
-            custom_id=id_do_generate
+        ActionRow(
+            Button(
+                style=ButtonStyle.green,
+                label='Build',
+                custom_id=id_do_generate
+            ),
+            Button(
+                style=ButtonStyle.url,
+                label='Report Issue',
+                url=url_issues
+            )
         )
     ]
 
@@ -191,6 +200,11 @@ async def regenerate(inter: disnake.MessageInteraction,
                 style=ButtonStyle.green,
                 custom_id=id_send_it
             ),
+            Button(
+                style=ButtonStyle.url,
+                label='Report Issue',
+                url=url_issues
+            )
         )
     )
 
