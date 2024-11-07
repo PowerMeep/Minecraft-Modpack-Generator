@@ -18,8 +18,18 @@ id_do_generate = 'build-modpack'
 id_send_it = 'send-it'
 
 
+def add_author(embed, author):
+    avatar_url = author.avatar.url if author.avatar else None
+    embed.set_author(
+        name=author.display_name,
+        icon_url=avatar_url
+    )
+
+
 class BuilderState:
-    def __init__(self):
+    def __init__(self,
+                 author: disnake.User):
+        self.author = author
         self.members_by_id = {}
         self.selected_members_by_name = {}
         self.modpack = None
@@ -46,6 +56,8 @@ class BuilderState:
         embed = Embed(
             description='\n'.join(desc)
         )
+
+        add_author(embed, self.author)
 
         for sq, meta in self.modpack.meta_by_sidequest.items():
             desc = sq.description
@@ -76,7 +88,7 @@ async def build_modpack(inter: disnake.ApplicationCommandInteraction):
             await state.message.delete()
         except:
             pass
-    state = BuilderState()
+    state = BuilderState(inter.author)
     states_by_user[inter.author.id] = state
 
     options = []
@@ -113,6 +125,7 @@ async def build_modpack(inter: disnake.ApplicationCommandInteraction):
             '_Please be patient. Building can take a while._'
         )
     )
+    add_author(embed, inter.author)
 
     state.message = await inter.edit_original_response(
         embed=embed,
@@ -199,6 +212,8 @@ async def send(inter: disnake.MessageInteraction,
         embed = Embed(
             description='\n'.join(desc)
         )
+
+        add_author(embed, state.author)
 
         member: disnake.Member = state.selected_members_by_name.get(name)
         dm_channel = member.dm_channel
