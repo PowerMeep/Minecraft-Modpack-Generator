@@ -156,11 +156,15 @@ class Mod:
 
     def is_stale(self):
         if self.last_update is None:
+            logger.warning(f'Mod {self.curseforge_id} has no last update time')
             return True
         if stale_time is None:
             return False
         oldest = datetime.now(timezone.utc) - stale_time
-        return self.last_update <= oldest
+        stale = self.last_update <= oldest
+        if stale:
+            logger.info(f'Mod {self.curseforge_id} is stale. {self.last_update.strftime(time_format)} <= {oldest.strftime(time_format)}')
+        return stale
 
     def fetch_sources(self,
                       force=False):
@@ -262,16 +266,16 @@ def _setup_cache():
     connection = sqlite3.connect(db_name)
     connection.execute(
         f'CREATE TABLE IF NOT EXISTS {table_timestamps}(\n'
-        f'  {key_project_id} TEXT PRIMARY KEY,\n'
-        f'  {key_date}       TEXT NOT NULL,\n'
-        f'  {key_metadata}   TEXT\n'
+        f'  {key_project_id}  INT PRIMARY KEY,\n'
+        f'  {key_date}        TEXT NOT NULL,\n'
+        f'  {key_metadata}    TEXT\n'
         ');'
     )
     connection.execute(
         f'CREATE TABLE IF NOT EXISTS {table_projects}(\n'
-        f'  {key_project_id}     TEXT NOT NULL,\n'
-        f'  {key_version}  TEXT NOT NULL,\n'
-        f'  {key_metadata} TEXT NOT NULL,\n'
+        f'  {key_project_id} INT NOT NULL,\n'
+        f'  {key_version}    TEXT NOT NULL,\n'
+        f'  {key_metadata}   TEXT NOT NULL,\n'
         f'  PRIMARY KEY ({key_project_id}, {key_version}),\n'
         f'  CONSTRAINT fk_name\n'
         f'    FOREIGN KEY ({key_project_id})\n'
@@ -289,9 +293,9 @@ def load_cached_sources():
     connection = sqlite3.connect(db_name)
     cursor = connection.cursor()
 
-    fetch_time_rows = cursor.execute(f'SELECT * FROM {table_timestamps};')
+    fetch_time_rows = cursor.execute(f'SELECT * FROM {table_timestamps};').fetchall()
     for row in fetch_time_rows:
-        cid = row[0]
+        cid = int(row[0])
         date = row[1]
         meta = row[2]
         meta = json.loads(meta) if meta else None
@@ -307,9 +311,9 @@ def load_cached_sources():
         if meta:
             mod.curseforge_meta.from_json(meta)
 
-    sources_rows = cursor.execute(f'SELECT * FROM {table_projects};')
+    sources_rows = cursor.execute(f'SELECT * FROM {table_projects};').fetchall()
     for row in sources_rows:
-        cid    = row[0]
+        cid = int(row[0])
         version = row[1]
         meta    = json.loads(row[2])
 
