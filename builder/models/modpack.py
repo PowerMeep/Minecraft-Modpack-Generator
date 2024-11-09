@@ -1,7 +1,6 @@
 import logging
 import random
 
-import models.mod
 from models.layer import Layer
 
 logger = logging.getLogger()
@@ -31,12 +30,20 @@ class ModPack:
         self.modloader = None
         self.result = Layer()
         self.sources_by_mod = {}
+        self.sources_by_dep = {}
         self.meta_by_sidequest = {}
 
     def get_name(self):
         if self.theme:
             return f'{self.challenge.name} - {self.theme.name}'
         return self.challenge.name
+
+    def get_combined_mods(self):
+        comb = {}
+        # Apply deps first so they can be overridden by local configs
+        comb.update(self.sources_by_dep)
+        comb.update(self.sources_by_mod)
+        return comb
 
     def _select_theme(self):
         self.theme = choice(self.challenge.themes, None)
@@ -141,14 +148,6 @@ class ModPack:
         self._collapse_layers()
         self._select_loader_and_version()
         self._select_sidequests(players)
-        self.pull_dependencies()
-
-        # Fetch metadata and save changes
-        mod_ids = [m.curseforge_id for m in self.sources_by_mod.keys()]
-        logger.warning(f'Updating info for mods: {mod_ids}')
-        models.mod.fetch_info(mod_ids)
-        for m in self.sources_by_mod.keys():
-            m.save_sources()
 
     def to_json(self) -> dict:
         sq_objs = []
@@ -175,15 +174,15 @@ class ModPack:
         }
 
     def _get_next_deps(self,
-                       sources,
-                       level: int = 0):
+                       temp_sources_by_mod: dict,
+                       level: int = 0) -> dict:
         from models.mod import CFSource, mods_by_id, Mod
         logger.warning(f'Pulling dependencies - level {level}')
 
-        dep_sources = []
+        new_sources_by_mod = {}
 
         source: CFSource
-        for source in sources:
+        for source in temp_sources_by_mod.values():
             for relation in source.dependencies:
                 if relation.get('relationType') == rt_required_dep:
                     need_fetch = True
@@ -199,27 +198,36 @@ class ModPack:
                     if need_fetch:
                         m.fetch_sources()
                         m.save_sources()
+
                     source = m.get_best_source(self.version)
                     if not source:
                         logger.error(f'Could not find version {self.version} for project {dep_id}')
                     else:
-                        self.sources_by_mod[m] = source
-        if dep_sources:
-            self._get_next_deps(dep_sources, level+1)
+                        new_sources_by_mod[m] = source
+
+        if new_sources_by_mod:
+            new_sources_by_mod.update(self._get_next_deps(new_sources_by_mod, level+1))
+
+        return new_sources_by_mod
 
     def pull_dependencies(self):
-        self._get_next_deps(list(self.sources_by_mod.values()))
+        from models.mod import Mod, fetch_info
+        self.sources_by_dep = self._get_next_deps(self.sources_by_mod)
+        m: Mod
+        fetch_info([m.curseforge_id for m in self.sources_by_dep.keys()])
 
     def generate_modlist_html(self) -> str:
+        comb = self.get_combined_mods()
         out = ['<ul>']
-        for mod in self.sources_by_mod.keys():
+        for mod in comb.keys():
             out.append(f'<li><a href="{mod.curseforge_meta.website_url}">{mod.curseforge_meta.display_name} (by {mod.curseforge_meta.author})</li>')
         out.append('</ul>')
         return '\n'.join(out)
 
     def generate_manifest_json(self) -> dict:
+        comb = self.get_combined_mods()
         files = []
-        for mod, source in self.sources_by_mod.items():
+        for mod, source in comb.items():
             files.append({
                 'projectID': mod.curseforge_id,
                 'fileID': source.file_id,
@@ -253,6 +261,8 @@ class ModPack:
         import re
         import shutil
         import time
+
+        self.pull_dependencies()
 
         # create temp directory
         temp_dir = 'temp'

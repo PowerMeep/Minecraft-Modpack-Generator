@@ -70,7 +70,7 @@ class Layer:
         self.overrides.extend(other_layer.overrides)
 
     def _cache_fetch_curseforge(self):
-        from models.mod import Mod
+        from models.mod import Mod, fetch_info
 
         mod: Mod
         mods_by_id = {}
@@ -89,6 +89,7 @@ class Layer:
             return
 
         logger.warning(f'{len(mods_by_id)} mods are stale and will be updated')
+        fetch_info(list(mods_by_id.keys()))
 
         for mod in mods_by_id.values():
             mod.fetch_sources()
