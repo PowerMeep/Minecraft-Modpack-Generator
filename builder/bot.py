@@ -13,11 +13,31 @@ intents = disnake.Intents.default()
 intents.members = True
 client = commands.InteractionBot(intents=intents)
 
-url_issues = 'https://github.com/PowerMeep/Minecraft-Modpack-Generator/issues'
-
 id_member_select = 'member-select'
 id_do_generate = 'build-modpack'
 id_send_it = 'send-it'
+
+btn_generate = Button(
+    style=ButtonStyle.green,
+    label='Generate',
+    custom_id=id_do_generate
+)
+btn_regenerate = Button(
+    style=ButtonStyle.green,
+    label='Regenerate',
+    custom_id=id_do_generate
+)
+btn_send_it = Button(
+    style=ButtonStyle.blurple,
+    label='Send It',
+    custom_id=id_send_it
+)
+btn_report = Button(
+    style=ButtonStyle.url,
+    label='Report Issue',
+    url='https://github.com/PowerMeep/Minecraft-Modpack-Generator/issues'
+)
+
 
 
 def add_author(embed, author):
@@ -78,9 +98,9 @@ states_by_user = {}
 @client.slash_command(
     description='Generate a Minecraft Modpack'
 )
-async def build_modpack(inter: disnake.ApplicationCommandInteraction):
+async def build_modpack(inter):
     await inter.response.defer(
-        with_message=False,
+        with_message=True,
         ephemeral=True
     )
 
@@ -89,61 +109,25 @@ async def build_modpack(inter: disnake.ApplicationCommandInteraction):
         try:
             await state.message.delete()
         except:
+            # We don't really care if this was successful or not
             pass
     state = BuilderState(inter.author)
     states_by_user[inter.author.id] = state
 
-    options = []
-    async for member in inter.guild.fetch_members(limit=25):
-        if member.id == client.user.id:
-            continue
-        state.members_by_id[str(member.id)] = member
-        options.append(
-            SelectOption(
-                label=member.display_name,
-                value=str(member.id)
-            )
-        )
-
-    components = [
-        StringSelect(
-            placeholder='Participating members',
-            custom_id=id_member_select,
-            min_values=0,
-            max_values=len(options),
-            options=options
-        ),
-        ActionRow(
-            Button(
-                style=ButtonStyle.green,
-                label='Build',
-                custom_id=id_do_generate
-            ),
-            Button(
-                style=ButtonStyle.url,
-                label='Report Issue',
-                url=url_issues
-            )
-        )
-    ]
-
-    embed = Embed(
-        title='Build Modpack',
-        description=(
-            '**Select any players that will be joining.**\n\n'
-            '_Please be patient. Building can take a while._'
-        )
-    )
-    add_author(embed, inter.author)
-
-    state.message = await inter.edit_original_response(
-        embed=embed,
-        components=components
-    )
+    try:
+        await show_player_prompt(inter, state)
+    except:
+        # If we couldn't get the player list and show the prompt, just skip right to generating.
+        await regenerate(inter, state)
 
 
 @client.listen('on_button_click')
 async def on_button_click(inter: disnake.MessageInteraction):
+    await inter.response.defer(
+        with_message=True,
+        ephemeral=True
+    )
+
     state = states_by_user.get(inter.author.id)
     if state is None:
         await inter.response.send_message(
@@ -166,6 +150,11 @@ async def on_button_click(inter: disnake.MessageInteraction):
 
 @client.listen('on_dropdown')
 async def on_dropdown(inter: disnake.MessageInteraction):
+    await inter.response.defer(
+        with_message=True,
+        ephemeral=True
+    )
+
     state: BuilderState = states_by_user.get(inter.author.id)
     if state is None:
         await inter.response.send_message(
@@ -179,33 +168,71 @@ async def on_dropdown(inter: disnake.MessageInteraction):
     await regenerate(inter, state)
 
 
-async def regenerate(inter: disnake.MessageInteraction,
-                     state: BuilderState):
-    await inter.response.defer(
-        with_message=False,
-        ephemeral=True
-    )
-    logger.info(f'{inter.author.display_name} is generating a modpack')
-    state.modpack = generate(list(state.selected_members_by_name.keys()))
-    await state.message.edit(
-        embed=state.to_embed(),
-        components=ActionRow(
-            Button(
-                label='Regenerate',
-                style=ButtonStyle.green,
-                custom_id=id_do_generate
-            ),
-            Button(
-                label='Send it',
-                style=ButtonStyle.green,
-                custom_id=id_send_it
-            ),
-            Button(
-                style=ButtonStyle.url,
-                label='Report Issue',
-                url=url_issues
+async def show_player_prompt(inter: disnake.ApplicationCommandInteraction,
+                             state: BuilderState):
+    members = inter.guild.fetch_members(limit=25)
+    # An error should be thrown here if we weren't able to retrieve any members.
+
+    options = []
+    async for member in members:
+        if member.id == client.user.id:
+            continue
+        state.members_by_id[str(member.id)] = member
+        options.append(
+            SelectOption(
+                label=member.display_name,
+                value=str(member.id)
             )
         )
+
+    components = [
+        StringSelect(
+            placeholder='Participating members',
+            custom_id=id_member_select,
+            min_values=0,
+            max_values=len(options),
+            options=options
+        ),
+        ActionRow(btn_generate, btn_report)
+    ]
+
+    embed = Embed(
+        title='Build Modpack',
+        description=(
+            '**Select any players that will be joining.**\n\n'
+            '_Please be patient. Building can take a while._'
+        )
+    )
+    add_author(embed, inter.author)
+
+    state.message = await inter.edit_original_response(
+        embed=embed,
+        components=components
+    )
+
+
+async def regenerate(inter: disnake.MessageInteraction,
+                     state: BuilderState):
+    logger.info(f'{inter.author.display_name} is generating a modpack')
+    state.modpack = generate(list(state.selected_members_by_name.keys()))
+    components = ActionRow(btn_regenerate, btn_send_it, btn_report)
+
+    if state.message:
+        # If this interaction has already been responded to
+        try:
+            await inter.delete_original_response()
+        except:
+            pass
+
+        await state.message.edit(
+            embed=state.to_embed(),
+            components=components
+        )
+    else:
+        # If this interaction has been deferred, but not responded to
+        state.message = await inter.edit_original_response(
+        embed=state.to_embed(),
+        components=components
     )
 
 
@@ -213,7 +240,14 @@ async def send(inter: disnake.MessageInteraction,
                state: BuilderState):
     await state.message.delete()
     filepath = state.modpack.generate_modpack_zip()
-    await inter.response.send_message(
+
+    try:
+        await inter.delete_original_response()
+    except:
+        pass
+
+    channel: disnake.TextChannel = inter.channel
+    await channel.send(
         embed=state.to_embed(),
         file=disnake.File(filepath)
     )
