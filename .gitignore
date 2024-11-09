@@ -133,4 +133,4 @@ temp/
 build.sh
 
 # cache database
-mod_cache.db
+cache.db

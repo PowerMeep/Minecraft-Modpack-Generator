@@ -51,8 +51,8 @@ class Layer:
         from random import choice
         if type(mod) is list:
             mod = choice(mod)[0]
-        from models.mod import mods_by_name
-        if mod not in self.mods and mod != mods_by_name.get('Vanilla'):
+        from models.mod import mod_ids_by_name
+        if mod and mod not in self.mods and mod.curseforge_id != mod_ids_by_name.get('Vanilla'):
             logger.debug(f'  > Adding mod: {mod.name}')
             self.mods.append(mod)
 
@@ -69,35 +69,6 @@ class Layer:
             self.add_mod(mod)
         self.overrides.extend(other_layer.overrides)
 
-    def _cache_fetch_curseforge(self):
-        from models.mod import Mod, fetch_info
-
-        mod: Mod
-        mods_by_id = {}
-        for mod in self.mods:
-            if mod.curseforge_id is None:
-                logger.error(f'{mod.name} has no Curseforge Id')
-                continue
-
-            if not mod.is_stale():
-                logger.debug(f'{mod.name} sources are recent enough')
-                continue
-            else:
-                mods_by_id[mod.curseforge_id] = mod
-
-        if len(mods_by_id) == 0:
-            return
-
-        logger.warning(f'{len(mods_by_id)} mods are stale and will be updated')
-        fetch_info(list(mods_by_id.keys()))
-
-        for mod in mods_by_id.values():
-            mod.fetch_sources()
-            mod.save_sources()
-
-    def fetch_metadata(self):
-        self._cache_fetch_curseforge()
-
 
 layers_by_name = {
     'Vanilla': Layer('Vanilla')
@@ -105,12 +76,23 @@ layers_by_name = {
 
 
 def _get_mods(element):
-    from models.load_util import get_item
-    from models.mod import mods_by_name
-    return get_item(
+    from models.load_util import get_flattened, get_item
+    from models.mod import mod_ids_by_name, fetch_mods
+    flattened_ids = get_flattened(
         element=element,
+        element_type='mod id',
+        store=mod_ids_by_name
+    )
+    projects_by_id = fetch_mods(flattened_ids)
+    id_item = get_item(
+        element=element,
+        element_type='mod id',
+        store=mod_ids_by_name
+    )
+    return get_item(
+        element=id_item,
         element_type='mod',
-        store=mods_by_name
+        store=projects_by_id
     )
 
 

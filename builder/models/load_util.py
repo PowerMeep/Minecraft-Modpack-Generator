@@ -2,18 +2,44 @@ import logging
 logger = logging.getLogger()
 
 
+def get_flattened(element,
+                  element_type: str,
+                  store: dict,
+                  target: list = None) -> list:
+    if target is None:
+        target = []
+
+    if type(element) is list:
+        for el in element:
+            target.extend(
+                get_flattened(
+                    el,
+                    element_type,
+                    store,
+                    target
+                )
+            )
+    elif element is not None:
+        out = store.get(element)
+        if out is None:
+            logger.error(f'Could not find {element_type}: {element}')
+        else:
+            target.append(out)
+    return target
+
+
 def get_item(element,
              element_type: str,
              store: dict):
     if type(element) is list:
         temp = []
         for el in element:
-            mods = get_item(
+            items = get_item(
                 element=el,
                 element_type=element_type,
                 store=store
             )
-            temp.append(mods)
+            temp.append(items)
         return temp
     elif element is not None:
         out = store.get(element)

@@ -56,20 +56,18 @@ class ModPack:
         self.result.update(other_layer=layer)
 
     def _collapse_layers(self):
-        from models.mod import mods_by_name
         for layer in self.challenge.layers:
             if type(layer) is list:
                 layer = choice(layer, None)
             self._add_layer(layer)
 
-        self.result.terrain_mod = choice(self.result.terrain_mod, mods_by_name.get('Vanilla'))
-        self.result.village_mod = choice(self.result.village_mod, mods_by_name.get('Vanilla'))
+        self.result.terrain_mod = choice(self.result.terrain_mod, None)
+        self.result.village_mod = choice(self.result.village_mod, None)
         self.result.add_mod(self.result.terrain_mod)
         self.result.add_mod(self.result.village_mod)
 
     def _select_loader_and_version(self):
         from models.mod import Mod
-        self.result.fetch_metadata()
         mods_by_version = {}
         mod: Mod
         for mod in self.result.mods:
@@ -106,7 +104,6 @@ class ModPack:
     def _select_sidequests(self,
                            players: list = None):
         from models import sidequest
-        sidequest.fetch_metadata()
 
         # Step 1: weed out the sidequests that can't fit in the main quest
         compatibles = []
@@ -176,34 +173,27 @@ class ModPack:
     def _get_next_deps(self,
                        temp_sources_by_mod: dict,
                        level: int = 0) -> dict:
-        from models.mod import CFSource, mods_by_id, Mod
+        from models.mod import CFSource, fetch_mods
         logger.warning(f'Pulling dependencies - level {level}')
 
         new_sources_by_mod = {}
+
+        dep_ids = set()
 
         source: CFSource
         for source in temp_sources_by_mod.values():
             for relation in source.dependencies:
                 if relation.get('relationType') == rt_required_dep:
-                    need_fetch = True
-
                     dep_id = relation.get('modId')
-                    m = mods_by_id.get(dep_id)
-                    if not m:
-                        m = Mod(name=None, curseforge_id=dep_id)
-                        mods_by_id[dep_id] = m
-                    elif not m.is_stale():
-                        need_fetch = False
+                    dep_ids.add(dep_id)
 
-                    if need_fetch:
-                        m.fetch_sources()
-                        m.save_sources()
-
-                    source = m.get_best_source(self.version)
-                    if not source:
-                        logger.error(f'Could not find version {self.version} for project {dep_id}')
-                    else:
-                        new_sources_by_mod[m] = source
+        mods_by_id = fetch_mods(list(dep_ids))
+        for dep_id, m in mods_by_id.items():
+            source = m.get_best_source(self.version)
+            if not source:
+                logger.error(f'Could not find version {self.version} for project {dep_id}')
+            else:
+                new_sources_by_mod[m] = source
 
         if new_sources_by_mod:
             new_sources_by_mod.update(self._get_next_deps(new_sources_by_mod, level+1))
@@ -211,10 +201,7 @@ class ModPack:
         return new_sources_by_mod
 
     def pull_dependencies(self):
-        from models.mod import Mod, fetch_info
         self.sources_by_dep = self._get_next_deps(self.sources_by_mod)
-        m: Mod
-        fetch_info([m.curseforge_id for m in self.sources_by_dep.keys()])
 
     def generate_modlist_html(self) -> str:
         comb = self.get_combined_mods()

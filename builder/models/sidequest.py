@@ -133,13 +133,3 @@ def from_json(obj: dict):
 def load_sidequests():
     from models.load_util import load_named_items
     load_named_items(json_path, from_json)
-
-
-def fetch_metadata():
-    from models.layer import Layer
-    sidequest_layer = Layer()
-    sq: Sidequest
-    for sq in sidequests_by_name.values():
-        for layer in sq.layers:
-            sidequest_layer.update(layer)
-    sidequest_layer.fetch_metadata()
