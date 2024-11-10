@@ -38,6 +38,7 @@ class ModPack:
         self.sources_by_mod = {}
         self.sources_by_dep = {}
         self.meta_by_sidequest = {}
+        self.compats = []
 
     def get_name(self):
         if self.scenario:
@@ -296,6 +297,30 @@ class ModPack:
     def pull_dependencies(self):
         self.sources_by_dep = self._get_next_deps(self.sources_by_mod)
 
+    def apply_compats(self):
+        from models.compat import all_compats
+        mod_ids = set(m.curseforge_id for m in self.get_combined_mods().keys())
+        valid_compats = []
+        for compat in all_compats:
+            is_valid = True
+            for project in compat.triggers:
+                if project.get('project_id') not in mod_ids:
+                    is_valid = False
+                    break
+            if is_valid:
+                valid_compats.append(compat)
+        new_ids = set()
+        for compat in valid_compats:
+            self.compats.append(compat)
+            for project in compat.projects:
+                new_ids.add(project.get('project_id'))
+
+        new_projects_by_id = fetch_projects(new_ids)
+        for cid, project in new_projects_by_id.items():
+            source = project.get_best_source(self.version)
+            if source is not None:
+                self.sources_by_mod[project] = source
+
     def generate_modlist_html(self) -> str:
         comb = self.get_combined_mods()
         out = ['<ul>']
@@ -335,14 +360,33 @@ class ModPack:
 
         return out
 
+    def _process_override(self,
+                          override_name: str,
+                          target_dir: str,
+                          override: dict):
+        for pattern, path in override.items():
+            import re
+            import shutil
+            if not re.match(pattern, self.version):
+                continue
+            try:
+                logger.warning(f'{override_name}({pattern}) - Copying override: {path}')
+                shutil.copytree(
+                    src=f'data/overrides/{path}',
+                    dst=target_dir,
+                    dirs_exist_ok=True
+                )
+            except:
+                logger.error(f'{override_name} - Unable to copy override: {path}')
+
     def generate_modpack_zip(self) -> str:
         import json5 as json
         import os
-        import re
         import shutil
         import time
 
         self.pull_dependencies()
+        self.apply_compats()
 
         # create temp directory
         temp_dir = 'temp'
@@ -376,18 +420,17 @@ class ModPack:
             for cid, project_meta in layer.projects_by_id.items():
                 if cid not in projects_by_id:
                     continue
-                for pattern, path in project_meta.overrides.items():
-                    if not re.match(pattern, self.version):
-                        continue
-                    try:
-                        logger.warning(f'{layer.name}.{cid}({pattern}) - Copying override: {path}')
-                        shutil.copytree(
-                            src=f'data/overrides/{path}',
-                            dst=temp_output_overrides_dir,
-                            dirs_exist_ok=True
-                        )
-                    except:
-                        logger.error(f'{layer.name}.{cid}({pattern}) - Unable to copy override: {path}')
+                self._process_override(
+                    override_name=f'{layer.name}.{cid}',
+                    override=project_meta.overrides,
+                    target_dir=temp_output_overrides_dir
+                )
+        for compat in self.compats:
+            self._process_override(
+                override_name=f'Compat {compat.name}',
+                override=compat.overrides,
+                target_dir=temp_output_overrides_dir
+            )
         shutil.make_archive(
             base_name=output_name,
             format='zip',

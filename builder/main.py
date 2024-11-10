@@ -15,11 +15,13 @@ def load():
     from models.sidequest import load_sidequests
     from models.scenario import load_scenarios
     from models.challenge import load_challenges
+    from models.compat import load_compats
 
     load_layers()
     load_sidequests()
     load_scenarios()
     load_challenges()
+    load_compats()
 
     logger.debug('LAYER REFERENCES')
     for l in models.layer.layers_by_name.values():

@@ -2,32 +2,30 @@
 
 This project generates goal-oriented modpacks for Minecraft.
 
-This version is a very early iteration. It's basically a proof of concept.
+For the moment, this only supports the Curseforge API and Forge mods.
 
 ## How it works
-### Challenges
-First, a **Challenge** is chosen. A challenge is composed of **Layers** and **Sidequests**.
-The challenge dictates how the modpack will be constructed and what the goal of the pack will be.
-
-The final modpack will have a name, description, a modloader, a version, and a list of mods.
-
-Noteably, there will only ever be one village or terrain mod.
-
-### Scenarios
-The **Scenario** is the setting of the challenge.
-
-### Layers
+### It's All About the Layers
 **Layers** are a collection of mods that and configurations that have a high compatibility and serve a specific theme.
+They are applied one at a time to create the final output.
 
-### Sidequests
-**Sidequests** are smaller goals that players will try to complete alongside the main **Challenge** goal.
-They may provide **Layers** of their own.
+Each layer on its own should result in a valid "modpack", even if that pack only ends up being one mod.
 
-Some **Sidequests** require to know the list of players beforehand.
-This is needed to generate player-specific configurations.
+### Generation
+First, a **Challenge** is chosen. The challenge represents the goal that the players will try to achieve
+over the duration of this modpack.
 
-### Compats
-**Compats** are extra mods or configs that are activated by the presence of two other mods.
+Several challenges support a number of **Scenarios**. These function as the setting that the challenge takes place in.
+
+Once the **Challenge** and **Scenario** are chosen, there is enough information to select the most compatible version of
+Minecraft and the mod loader. Any layers that are not compatible with this selection are dropped.
+
+Now that the core is in place, we can randomly add up to 3 supported **Sidequests**. These are like a little extra spice
+to add some more flavor to the overall experience. Some sidequests can generate player-specific configurations if a
+list of players is provided before the pack generation.
+
+Lastly, one final pass is made for **Compats**, which are extra layers that are applied if the conditions are met.
+These just serve to create better integration between other things that are present.
 
 ## Roadmap
 

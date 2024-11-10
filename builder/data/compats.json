@@ -1,11 +1,22 @@
 [
   {
+    "name": "Create Central Kitchen",
     "triggers": [
-      "Create",
-      "Farmer's Delight"
+      {
+        "project_id": 328085,
+        "project_name": "Create"
+      },
+      {
+        "project_id": 398521,
+        "project_name": "Farmer's Delight"
+      }
     ],
-    "mods": [
-      "Create Central Kitchen"
-    ]
+    "projects": [
+      {
+        "project_id": 820977,
+        "project_name": "Create Central Kitchen"
+      }
+    ],
+    "overrides": {}
   }
 ]
