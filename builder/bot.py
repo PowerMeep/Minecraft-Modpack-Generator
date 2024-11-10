@@ -60,9 +60,11 @@ class BuilderState:
     def to_embed(self):
         desc = [
             f'# {self.modpack.get_name()}',
-            self.modpack.challenge.description,
-            f'\n**Duration:** {self.modpack.challenge.duration}'
+            self.modpack.challenge.description
         ]
+        if self.modpack.scenario:
+            desc.append(f'\n_{self.modpack.scenario.description}_')
+        desc.append(f'\n**Duration:** {self.modpack.challenge.duration}')
         if len(self.selected_members_by_name) > 0:
             desc.append('### Players')
             for player in self.selected_members_by_name.values():

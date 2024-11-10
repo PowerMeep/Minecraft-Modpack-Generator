@@ -2,9 +2,9 @@
   {
     "name": "Location, Location",
     "description": "Players must set up base in the given location",
+    "enabled": true,
     "per_player": true,
     "players_upfront": false,
-    "hardcore": false,
     "data": {
       "Treetops": 1,
       "Cliffside": 1,
@@ -16,119 +16,135 @@
   {
     "name": "404 Challenge",
     "description": "Once the sun sets on the first day, players must go underground and never return to the surface.",
+    "enabled": true,
     "per_player": false,
     "players_upfront": false,
-    "hardcore": false,
     "data": {},
     "layers": []
   },
   {
     "name": "Nomadic",
     "description": "Players may not construct any long-term base and must continuously travel.",
+    "enabled": true,
     "per_player": false,
     "players_upfront": false,
-    "hardcore": false,
     "data": {},
+    "layers": []
+  },
+  {
+    "name": "Which Way Up?",
+    "description": "Players' personal gravity is randomized.",
+    "enabled": false,
+    "per_player": true,
+    "players_upfront": false,
+    "data": {
+      "Up": 1,
+      "Down": 1,
+      "North": 1,
+      "South": 1,
+      "East": 1,
+      "West": 1
+    },
     "layers": []
   },
   {
     "name": "Not the Light!",
     "description": "Players must stay out of direct sunlight.",
+    "enabled": true,
     "per_player": false,
     "players_upfront": false,
-    "hardcore": false,
     "data": {},
     "layers": [
-      "Sunburn"
+      "sunburn"
+    ]
+  },
+    {
+    "name": "Blackout",
+    "description": "Hello darkness, my old friend.",
+    "enabled": true,
+    "per_player": false,
+    "players_upfront": false,
+    "data": {},
+    "layers": [
+      "blackout"
     ]
   },
   {
     "name": "Insomnia",
     "description": "Players are unable to sleep.",
+    "enabled": true,
     "per_player": false,
     "players_upfront": false,
-    "hardcore": false,
     "data": {},
     "layers": [
-      "Insomnia"
+      "insomnia"
     ]
   },
   {
     "name": "Tough as Nails",
     "description": "Players must stay at a comfortable temperature and stay hydrated.",
+    "enabled": true,
     "per_player": false,
     "players_upfront": false,
-    "hardcore": false,
     "data": {},
     "layers": [
-      "Tough as Nails"
-    ]
-  },
-  {
-    "name": "Like what now?",
-    "description": "All mobs replaced with Lycanites.",
-    "per_player": false,
-    "players_upfront": false,
-    "hardcore": false,
-    "data": {},
-    "layers": [
-      "Lycanites"
+      "tough as nails"
     ]
   },
   {
     "name": "Sussy Baka",
     "description": "A splinter cell of players are imposters that must try to prevent the main goal. The hard part is not getting caught!",
+    "enabled": true,
     "per_player": true,
     "players_upfront": true,
-    "hardcore": false,
     "data": {
       "crewmate": 10,
       "imposter": 1
     },
     "layers": [
-      "Hitman"
+      "hitman"
     ]
   },
   {
     "name": "Manhunt",
     "description": "A splinter cell of players actually tries to complete the mission while everybody else tries to stop them.",
+    "enabled": true,
     "per_player": true,
     "players_upfront": true,
-    "hardcore": true,
     "data": {
       "hunter": 10,
       "hunted": 1
     },
     "layers": [
-      "Hitman"
+      "hitman"
     ]
   },
   {
     "name": "Bounties",
     "description": "Each player is assigned to kill another player.",
+    "enabled": true,
     "per_player": true,
     "players_upfront": true,
-    "hardcore": false,
     "data": null,
     "layers": [
-      "Hitman"
+      "hitman"
     ]
   },
   {
     "name": "All for One",
     "description": "If one player dies, all other players die simultaneously.",
+    "enabled": false,
     "per_player": true,
     "players_upfront": true,
-    "hardcore": false,
     "data": {},
     "layers": []
   },
   {
     "name": "Feeling Inspired",
     "description": "Players must build something based on the given prompt.",
+    "enabled": true,
     "per_player": true,
     "players_upfront": false,
-    "hardcore": false,
     "data": {
       "Tower": 1,
       "Upside-Down": 1,
@@ -143,9 +159,9 @@
   {
     "name": "Hoarder",
     "description": "Players must stockpile the given resource.",
+    "enabled": true,
     "per_player": true,
     "players_upfront": false,
-    "hardcore": false,
     "data": {
       "Iron": 1,
       "Copper": 1,

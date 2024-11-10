@@ -1,8 +1,8 @@
 from quart import Quart, request
 from resources import modpacks as mp
-from resources import mods as m
 from resources import layers as l
 from resources import sidequests as sq
+from resources import scenarios as s
 from resources import challenges as c
 
 app = Quart(__name__)
@@ -22,9 +22,9 @@ async def modpacks():
     return await _make_call(mp)
 
 
-@app.route('/mods', methods=['GET'])
+@app.route('/scenarios', methods=['GET'])
 async def mods():
-    return await _make_call(m)
+    return await _make_call(s)
 
 
 @app.route('/layers', methods=['GET'])

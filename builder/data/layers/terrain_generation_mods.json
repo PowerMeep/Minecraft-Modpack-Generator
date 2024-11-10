@@ -1,0 +1,98 @@
+[
+  {
+    "name": "vanilla terrain",
+    "projects": []
+  },
+  {
+    "name": "terralith",
+    "projects": [
+      {
+        "project_id": 513688
+      }
+    ]
+  },
+  {
+    "name": "terraforged",
+    "projects": [
+      {
+        "project_id": 363820
+      }
+    ]
+  },
+  {
+    "name": "tectonic",
+    "projects": [
+      {
+        "project_id": 686836
+      }
+    ]
+  },
+  {
+    "name": "biomes o plenty",
+    "projects": [
+      {
+        "project_id": 220318
+      }
+    ]
+  },
+  {
+    "name": "biomes youll go",
+    "projects": [
+      {
+        "project_id": 247560
+      }
+    ]
+  },
+  {
+    "name": "expanded ecosphere",
+    "projects": [
+      {
+        "project_id": 490686
+      }
+    ]
+  },
+  {
+    "name": "stratospherical expansion",
+    "projects": [
+      {
+        "project_id": 823268
+      }
+    ]
+  },
+  {
+    "name": "ecospherical expansion",
+    "projects": [
+      {
+        "project_id": 570025
+      }
+    ]
+  },
+  {
+    "name": "overhauled overworld",
+    "projects": [
+      {
+        "project_id": 921022
+      }
+    ]
+  },
+  {
+    "name": "modern beta",
+    "projects": []
+  },
+  {
+    "name": "continents",
+    "projects": [
+      {
+        "project_id": 682515
+      }
+    ]
+  },
+  {
+  "name": "skyblock",
+    "projects": [
+      {
+        "project_id": 422034
+      }
+    ]
+  }
+]

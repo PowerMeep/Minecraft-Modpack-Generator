@@ -1,4 +1,7 @@
 import logging
+
+import models.layer
+
 logger = logging.getLogger()
 
 
@@ -8,15 +11,27 @@ def load():
     )
     logger.setLevel(logging.INFO)
 
-    from models.mod import load_mods
     from models.layer import load_layers
     from models.sidequest import load_sidequests
+    from models.scenario import load_scenarios
     from models.challenge import load_challenges
 
-    load_mods()
     load_layers()
     load_sidequests()
+    load_scenarios()
     load_challenges()
+
+    logger.debug('LAYER REFERENCES')
+    for l in models.layer.layers_by_name.values():
+        logger.info(f'{l.name}: {l.references}')
+
+    logger.debug('SIDEQUEST REFERENCES')
+    for l in models.sidequest.sidequests_by_name.values():
+        logger.info(f'{l.name}: {l.references}')
+
+    logger.debug('SCENARIO REFERENCES')
+    for l in models.scenario.scenarios_by_name.values():
+        logger.info(f'{l.name}: {l.references}')
 
 
 def start():

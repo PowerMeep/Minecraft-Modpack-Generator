@@ -1,112 +1,150 @@
 [
   {
-    "name": "100 Day Hardcore Survival",
+    "name": "100 Days",
     "description": "Players must try to survive the scenario to the 100 day mark.",
     "duration": "100 Minecraft Days",
+    "hardcore": true,
     "synced": true,
     "weight": 50,
-    "themes": [
+    "scenarios": [
       "Alex's Caves",
       "Zombies",
       "Sculk Horde",
       "Twilight Forest",
       "Ice and Fire",
-      "Ars Noveau",
+      "Ars Nouveau",
       "Stratospherical",
       "Aether",
-      "Winter Wonderland",
-      "Roughin' It",
-      "High Seas"
+      "Snowball Earth",
+      "One With Nature",
+      "High Seas",
+      "Skyblock",
+      "Vanilla"
     ],
     "layers": [
-      "Essentials",
-      "Any Vanilla-Friendly Terrain",
-      "Any Village"
+      "essentials"
     ],
     "sidequests": [
       "Tough as Nails",
       "Not the Light!",
       "All for One",
-      "Insomnia"
+      "Insomnia",
+      "Blackout",
+      "Which Way Up?"
     ]
   },
   {
     "name": "Battle",
     "description": "Players have 7 real world days to prep for a battle to the death. A single-elimination tournament is held on the 7th day to determine the victor.",
     "duration": "7 Real Days",
+    "hardcore": false,
     "synced": false,
     "weight": 10,
-    "themes": [
+    "scenarios": [
       "Ice and Fire",
       "Aether",
-      "Ars Noveau"
+      "Ars Nouveau",
+      "Vanilla"
     ],
     "layers": [
-      "Essentials",
-      "Any Terrain",
-      "Any Village",
-      [
-        "Dungeons Arise",
-        "Dungeon Crawl",
-        "Vanilla"
-      ],
-      "Combat"
+      "essentials",
+      "combatitive"
     ],
     "sidequests": [
       "Insomnia",
-      "Like what now?"
+      "Blackout",
+      "Location, Location",
+      "Nomadic"
     ]
   },
   {
     "name": "Build Battle",
     "description": "Players have 7 real world days to build the best build they can build. A vote is held on the 7th day to determine the victor.",
     "duration": "7 Real Days",
+    "hardcore": false,
     "synced": false,
     "weight": 10,
+    "scenarios": [],
+    "terrain": [
+      "vanilla terrain",
+      "terralith",
+      "terraforged",
+      "tectonic",
+      "overhauled overworld"
+    ],
+    "villages": [
+      "vanilla villages",
+      "better villages",
+      "overhauled villages"
+    ],
+
     "layers": [
-      "Essentials",
-      "Any Terrain",
-      "Any Village",
-      "Builds"
+      "essentials",
+      "builder"
     ],
     "sidequests": [
       "Feeling Inspired",
       "Hoarder",
       "Insomnia",
-      "Like what now?"
+      "Blackout",
+      "Which Way Up?",
+      "Location, Location"
     ]
   },
   {
     "name": "Capture the Flag",
     "description": "Players spend 7 days building a fortress. On the 7th day, a game of CTF is played to determine the winning team.",
     "duration": "7 Real Days",
+    "hardcore": false,
     "synced": false,
     "weight": 10,
+    "scenarios": [],
+    "terrain": [
+      "vanilla terrain",
+      "terralith",
+      "terraforged",
+      "tectonic",
+      "overhauled overworld"
+    ],
+    "villages": [
+      "vanilla villages",
+      "better villages",
+      "overhauled villages"
+    ],
     "layers": [
-      "Essentials",
-      "Builds",
-      "Any Village",
-      "Any Terrain"
+      "essentials",
+      "builder"
     ],
     "sidequests": [
       "Feeling Inspired",
       "Not the Light!",
       "Hoarder",
-      "Insomnia",
-      "Like what now?"
+      "Insomnia"
     ]
   },
   {
     "name": "Cobblemon",
     "description": "Players have 7 real world days to build a team of 6 pokemon. A tournament is held on the 7th day to determine the victor.",
     "duration": "7 Real Days",
+    "hardcore": false,
     "synced": false,
     "weight": 10,
+    "scenarios": [],
+    "terrain": [
+      "vanilla terrain",
+      "terralith",
+      "terraforged",
+      "tectonic",
+      "overhauled overworld"
+    ],
+    "villages": [
+      "vanilla villages",
+      "better villages",
+      "overhauled villages"
+    ],
     "layers": [
-      "Essentials",
-      "Cobblemon",
-      "Any Vanilla-Friendly Terrain",
-      "Any Village"
+      "essentials",
+      "cobblemon"
     ],
     "sidequests": []
   },
@@ -114,82 +152,86 @@
     "name": "Mayor Mine",
     "description": "Players are each assigned a village and are given 7 days to clean it up. A vote is held on the 7th day to determine the victor.",
     "duration": "7 Real Days",
+    "hardcore": false,
     "synced": false,
     "weight": 10,
+    "scenarios": [
+      "Ice and Fire",
+      "Ars Nouveau",
+      "Stratospherical",
+      "Snowball Earth",
+      "One With Nature",
+      "High Seas",
+      "Vanilla"
+    ],
     "layers": [
-      "Essentials",
-      "Mayor Mine",
-      "Any Terrain",
-      "Builds"
+      "essentials",
+      "villagistics",
+      "decor",
+      "builder"
     ],
     "sidequests": [
       "Feeling Inspired",
       "Hoarder",
       "Insomnia",
-      "Like what now?"
+      "Blackout"
     ]
   },
   {
     "name": "The One Percent",
     "description": "Players have 7 days to accrue as much wealth as they can. A vote is held on the 7th day to determine the victor.",
     "duration": "7 Real Days",
+    "hardcore": false,
     "synced": false,
     "weight": 10,
-    "themes": [
+    "scenarios": [
       "Ice and Fire",
       "Stratospherical",
       "Aether",
-      "Winter Wonderland",
-      "Roughin' It",
+      "Snowball Earth",
+      "One With Nature",
       "Twilight Forest",
-      "High Seas"
+      "High Seas",
+      "Vanilla"
     ],
     "layers": [
-      "Essentials",
-      "Any Terrain",
-      "Any Village",
-      [
-        "Natural Wildlife",
-        "Lycanites",
-        "Vanilla"
-      ],
-      [
-        "Dungeons Arise",
-        "Dungeon Crawl",
-        "Vanilla"
-      ],
-      "Resourceful"
-
+      "essentials",
+      "dungeons arise",
+      "dungeon crawl",
+      "resourceful"
     ],
     "sidequests": [
       "Hoarder",
       "All for One",
-      "Insomnia"
+      "Insomnia",
+      "Location, Location",
+      "Nomadic",
+      "Blackout"
     ]
   },
   {
     "name": "The Race",
     "description": "Players have 7 real world days to acquire the best mount they can find. A race is held on the 7th day to determine the victor.",
     "duration": "7 Real Days",
+    "hardcore": false,
     "synced": false,
     "weight": 10,
-    "themes": [
+    "scenarios": [
       "Ice and Fire",
       "Stratospherical",
       "Aether",
-      "Winter Wonderland",
-      "Roughin' It",
-      "High Seas"
+      "Snowball Earth",
+      "One With Nature",
+      "High Seas",
+      "Vanilla"
     ],
     "layers": [
-      "Essentials",
-      "Any Terrain",
-      "Any Village",
-      "Mounts"
+      "essentials",
+      "mounts"
     ],
     "sidequests": [
       "Insomnia",
-      "Like what now?"
+      "Blackout"
     ]
   }
 ]

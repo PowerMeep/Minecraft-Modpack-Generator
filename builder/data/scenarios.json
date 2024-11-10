@@ -1,0 +1,197 @@
+[
+  {
+    "name": "Vanilla",
+    "description": "Nothing special here.",
+    "terrain": ["vanilla terrain"],
+    "villages": ["vanilla villages"],
+    "layers": []
+  },
+  {
+    "name": "Alex's Caves",
+    "description": "Survive in one of five new biomes hidden deep within the planet.",
+    "terrain": ["vanilla terrain"],
+    "villages": ["vanilla villages"],
+    "layers": [
+      "alexs caves"
+    ]
+  },
+  {
+    "name": "Zombies",
+    "description": "Hordes of zombies everywhere.",
+    "terrain": [
+      "vanilla terrain",
+      "terralith",
+      "terraforged",
+      "tectonic",
+      "overhauled overworld"
+    ],
+    "villages": [
+      "vanilla villages",
+      "better villages",
+      "overhauled villages"
+    ],
+    "layers": [
+      "zombies"
+    ]
+  },
+  {
+    "name": "Sculk Horde",
+    "description": "The Sculk is slowly taking over the world.",
+    "terrain": [
+      "vanilla terrain",
+      "terralith",
+      "terraforged",
+      "tectonic",
+      "overhauled overworld"
+    ],
+    "villages": [
+      "vanilla villages",
+      "better villages",
+      "overhauled villages"
+    ],
+    "layers": [
+      "sculk horde"
+    ]
+  },
+  {
+    "name": "Twilight Forest",
+    "description": "An alternate, magical dimension.",
+    "terrain": ["vanilla terrain"],
+    "villages": ["vanilla villages"],
+    "layers": [
+      "twilight forest"
+    ]
+  },
+  {
+    "name": "Ice and Fire",
+    "description": "Knights and dragons and stuff.",
+    "terrain": [
+      "vanilla terrain",
+      "terralith",
+      "terraforged",
+      "tectonic",
+      "overhauled overworld",
+      "biomes o plenty",
+      "biomes youll go",
+      "expanded ecosphere",
+      "ecospherical expansion"
+    ],
+    "villages": [
+      "vanilla villages",
+      "better villages",
+      "overhauled villages"
+    ],
+    "layers": [
+      "ice and fire",
+      "dungeon crawl",
+      "dungeons arise",
+      "yungs better dungeons",
+      "repurposed structures"
+    ]
+  },
+  {
+    "name": "Ars Nouveau",
+    "description": "Magic! Magic magic magic.",
+    "terrain": [
+      "vanilla terrain",
+      "terralith",
+      "terraforged",
+      "tectonic",
+      "overhauled overworld",
+      "biomes o plenty",
+      "biomes youll go",
+      "expanded ecosphere",
+      "ecospherical expansion"
+    ],
+    "villages": [
+      "vanilla villages",
+      "better villages",
+      "overhauled villages"
+    ],
+    "layers": [
+      "ars nouveau"
+    ]
+  },
+  {
+    "name": "Stratospherical",
+    "description": "Floating islands and flying ships.",
+    "terrain": ["stratospherical expansion"],
+    "villages": ["vanilla villages"],
+    "layers": [
+      "ships",
+      "grappling hooks"
+    ]
+  },
+  {
+    "name": "Aether",
+    "description": "A world in the sky full of magic and strange things.",
+    "terrain": ["vanilla terrain"],
+    "villages": ["vanilla villages"],
+    "layers": [
+      "aether"
+    ]
+  },
+  {
+    "name": "Snowball Earth",
+    "description": "It's the second ice age. Continuous snowfall and nearly all the water is frozen.",
+    "terrain": [
+      "vanilla terrain",
+      "terralith",
+      "terraforged",
+      "tectonic",
+      "overhauled overworld"
+    ],
+    "villages": [
+      "vanilla villages",
+      "better villages",
+      "overhauled villages"
+    ],
+    "layers": [
+      "snowball earth"
+    ]
+  },
+  {
+    "name": "One With Nature",
+    "description": "Animals and nature are the focus here.",
+    "terrain": [
+      "vanilla terrain",
+      "terralith",
+      "terraforged",
+      "tectonic",
+      "overhauled overworld"
+    ],
+    "villages": [
+      "vanilla villages",
+      "better villages",
+      "overhauled villages"
+    ],
+    "layers": [
+      "weather",
+      "aquaculture",
+      "natural"
+    ]
+  },
+  {
+    "name": "High Seas",
+    "description": "A vast ocean expanse teeming with treachery.",
+    "terrain": ["continents"],
+    "villages": [
+      "vanilla villages",
+      "better villages",
+      "overhauled villages"
+    ],
+    "layers": [
+      "ships",
+      "weather",
+      "aquaculture",
+      "oceanic"
+    ]
+  },
+  {
+    "name": "Skyblock",
+    "description": "Start with almost nothing and build the entire world yourself.",
+    "terrain": ["skyblock"],
+    "villages": ["vanilla villages"],
+    "layers": []
+  }
+]

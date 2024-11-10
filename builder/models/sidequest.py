@@ -32,6 +32,14 @@ class Sidequest:
         self.forces_hardcore = hardcore
         self.layers = layers or []
         self.data = data
+        self.references = 0
+
+    def requires_project_id(self, project_id):
+        for layer in self.layers:
+            if meta := layer.projects_by_id.get(project_id) is not None:
+                if meta.required:
+                    return True
+        return False
 
     def generate(self,
                  players: list = None):
@@ -92,14 +100,6 @@ class Sidequest:
         }
         return out
 
-    def is_compatible_with(self, version):
-        for layer in self.layers:
-            # FIXME: this might break if the layer has nested lists
-            for mod in layer.mods:
-                if mod.get_best_source(version) is None:
-                    return False
-        return True
-
 
 sidequests_by_name = {}
 
@@ -114,6 +114,10 @@ def from_json(obj: dict):
     if errors:
         for error in errors:
             logger.error(error)
+        return
+
+    if not obj.get('enabled'):
+        logger.info(f'Skipping disabled sidequest: {obj.get('name')}')
         return
 
     sq = Sidequest(
@@ -133,13 +137,3 @@ def from_json(obj: dict):
 def load_sidequests():
     from models.load_util import load_named_items
     load_named_items(json_path, from_json)
-
-
-def fetch_metadata():
-    from models.layer import Layer
-    sidequest_layer = Layer()
-    sq: Sidequest
-    for sq in sidequests_by_name.values():
-        for layer in sq.layers:
-            sidequest_layer.update(layer)
-    sidequest_layer.fetch_metadata()

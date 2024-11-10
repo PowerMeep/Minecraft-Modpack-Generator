@@ -1,4 +1,5 @@
-requests
-pytimeparse2
-quart
-disnake
+requests~=2.32.3
+pytimeparse2~=1.7.1
+quart~=0.19.8
+disnake~=2.9.2
+json5~=0.9.25

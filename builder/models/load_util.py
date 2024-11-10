@@ -1,5 +1,34 @@
 import logging
+
+import json5 as json
+
 logger = logging.getLogger()
+
+
+def get_flattened(element,
+                  element_type: str,
+                  store: dict,
+                  target: list = None) -> list:
+    if target is None:
+        target = []
+
+    if type(element) is list:
+        for el in element:
+            target.extend(
+                get_flattened(
+                    el,
+                    element_type,
+                    store,
+                    target
+                )
+            )
+    elif element is not None:
+        out = store.get(element)
+        if out is None:
+            logger.error(f'Could not find {element_type}: {element}')
+        else:
+            target.append(out)
+    return target
 
 
 def get_item(element,
@@ -8,21 +37,21 @@ def get_item(element,
     if type(element) is list:
         temp = []
         for el in element:
-            mods = get_item(
+            items = get_item(
                 element=el,
                 element_type=element_type,
                 store=store
             )
-            temp.append(mods)
+            if items:
+                temp.append(items)
         return temp
     elif element is not None:
-        out = store.get(element)
-        if out is None:
+        if out := store.get(element):
+            out.references += 1
+            return out
+        else:
             logger.error(f'Could not find {element_type}: {element}')
-        return out
-    else:
-        return None
-
+    return None
 
 def get_layers(element):
     from models.layer import layers_by_name
@@ -36,7 +65,6 @@ def get_layers(element):
 def load_items(path: str,
                callback):
     logger.warning(f'Reading from file: {path}')
-    import json
     with open(path) as f:
         all_mods = json.load(f)
         for m_dict in all_mods:
@@ -46,7 +74,6 @@ def load_items(path: str,
 def load_named_items(path: str,
                      callback):
     logger.warning(f'Reading from file: {path}')
-    import json
     with open(path) as f:
         all_items = json.load(fp=f)
         for m_dict in all_items:

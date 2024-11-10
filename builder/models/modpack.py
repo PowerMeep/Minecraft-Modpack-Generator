@@ -1,7 +1,11 @@
 import logging
 import random
 
-from models.layer import Layer
+from models.layer import Layer, ProjectMeta
+from models.sidequest import Sidequest
+from models.scenario import Scenario
+from models.challenge import Challenge
+from models.project import Project, fetch_projects
 
 logger = logging.getLogger()
 
@@ -24,18 +28,20 @@ def choice(obj, default):
 
 class ModPack:
     def __init__(self):
-        self.challenge = None
+        challenge: Challenge
+        scenario: Scenario
+
+        self.layers_by_name = {}
         self.version = None
-        self.theme = None
         self.modloader = None
-        self.result = Layer()
+
         self.sources_by_mod = {}
         self.sources_by_dep = {}
         self.meta_by_sidequest = {}
 
     def get_name(self):
-        if self.theme:
-            return f'{self.challenge.name} - {self.theme.name}'
+        if self.scenario:
+            return f'{self.challenge.name} - {self.scenario.name}'
         return self.challenge.name
 
     def get_combined_mods(self):
@@ -45,57 +51,106 @@ class ModPack:
         comb.update(self.sources_by_mod)
         return comb
 
-    def _select_theme(self):
-        self.theme = choice(self.challenge.themes, None)
-        if self.theme:
-            logger.info(f'> Selected theme: {self.theme.name}')
-            self._add_layer(self.theme)
+    def _select_challenge(self):
+        from random import choices
+        from models.challenge import weights_by_challenge
 
-    def _add_layer(self, layer):
+        self.challenge = choices(
+            population=list(weights_by_challenge.keys()),
+            weights=list(weights_by_challenge.values()),
+            k=1
+        )[0]
+        logger.info(f'Chose challenge "{self.challenge.name}"')
+
+    def _select_scenario(self):
+        self.scenario = choice(self.challenge.scenarios, None)
+        if self.scenario:
+            logger.info(f'> Selected scenario: {self.scenario.name}')
+
+    def _add_layer(self,
+                   layer: Layer):
         logger.info(f'> Adding layer: {layer.name}')
-        self.result.update(other_layer=layer)
+        self.layers_by_name[layer.name] = layer
 
-    def _collapse_layers(self):
-        from models.mod import mods_by_name
+    def _collect_core_layers(self):
+        terrains = set()
+        villages = set()
+
+        layer: Layer
+        if self.scenario:
+            for layer in self.scenario.layers:
+                self._add_layer(layer)
+            for layer in self.scenario.terrain:
+                terrains.add(layer)
+            for layer in self.scenario.villages:
+                villages.add(layer)
+
         for layer in self.challenge.layers:
-            if type(layer) is list:
-                layer = choice(layer, None)
             self._add_layer(layer)
+        for layer in self.challenge.terrain:
+            terrains.add(layer)
+        for layer in self.challenge.villages:
+            villages.add(layer)
 
-        self.result.terrain_mod = choice(self.result.terrain_mod, mods_by_name.get('Vanilla'))
-        self.result.village_mod = choice(self.result.village_mod, mods_by_name.get('Vanilla'))
-        self.result.add_mod(self.result.terrain_mod)
-        self.result.add_mod(self.result.village_mod)
+        if village := choice(list(villages), None):
+            self._add_layer(village)
+
+        if terrain := choice(list(terrains), None):
+            self._add_layer(terrain)
 
     def _select_loader_and_version(self):
-        from models.mod import Mod
-        self.result.fetch_metadata()
-        mods_by_version = {}
-        mod: Mod
-        for mod in self.result.mods:
-            for version in mod.sources_by_version.keys():
+        project_ids = set()
+        layers_by_project_id = {}
+        layer: Layer
+        for layer in self.layers_by_name.values():
+            project_meta: ProjectMeta
+            for project_meta in layer.projects_by_id.values():
+                project_ids.add(project_meta.cid)
+                layers_by_project_id.setdefault(project_meta.cid, []).append(layer)
+
+        # Fetch the project data
+        projects_by_id = fetch_projects(list(project_ids))
+
+        # Get a count of which projects support which versions
+        projects_by_version = {}
+        project: Project
+        for project in projects_by_id.values():
+            for version in project.sources_by_version.keys():
                 # this block would only consider the major-minor numbers
                 # trimmed_version = '.'.join(version.split('.')[:2])
-                # mods_by_version.setdefault(trimmed_version, set()).add(mod)
-                mods_by_version.setdefault(version, set()).add(mod)
+                # projects_by_version.setdefault(trimmed_version, set()).add(mod)
+                projects_by_version.setdefault(version, set()).add(project)
 
+        # Select the best version
         best = None
-        for version, mods in mods_by_version.items():
+        for version, projects in projects_by_version.items():
             # TODO: Expand this to prioritize some mods over others.
             #       For now, the score is just the number of mods supported.
-            score = len(mods)
+            score = len(projects)
             if best is None or best[1] < score:
                 best = version, score
 
+        # Remove incompatible layers
         self.version = best[0]
-        logger.info(f'Selected version {self.version}')
-        for mod in self.result.mods:
-            source = mod.get_best_source(self.version)
-            if source:
-                self.sources_by_mod[mod] = source
-            else:
-                logger.info(f'Dropping incompatible core mod: {mod.curseforge_id}')
+        logger.info(f'Selected minecraft version {self.version}')
+        for cid, project in projects_by_id.items():
+            source = project.get_best_source(self.version)
+            if not source:
+                layer: Layer
+                for layer in layers_by_project_id.get(cid):
+                    if layer.projects_by_id.get(cid).required:
+                        del(self.layers_by_name[layer.name])
+                        logger.info(f'Dropping incompatible layer: {project.curseforge_id}')
 
+        # For any remaining layers, add the mod sources
+        for layer in self.layers_by_name.values():
+            for cid in layer.projects_by_id.keys():
+                project = projects_by_id.get(cid)
+                source = project.get_best_source(self.version)
+                if source:
+                    self.sources_by_mod[project] = source
+
+        # Select the modloader
         from apis import curseforge
         self.modloader = curseforge.get_recommended_modloader(self.version)
         if not self.modloader:
@@ -105,19 +160,32 @@ class ModPack:
 
     def _select_sidequests(self,
                            players: list = None):
-        from models import sidequest
-        sidequest.fetch_metadata()
+        project_ids = set()
+        eligible_sidequests = set(self.challenge.sidequests)
+        sidequests_by_project_id = {}
+        layer: Layer
+        for sidequest in self.challenge.sidequests:
+            project_meta: ProjectMeta
+            if sidequest.layers:
+                for layer in sidequest.layers:
+                    for project_meta in layer.projects_by_id.values():
+                        project_ids.add(project_meta.cid)
+                        sidequests_by_project_id.setdefault(project_meta.cid, []).append(sidequest)
 
-        # Step 1: weed out the sidequests that can't fit in the main quest
-        compatibles = []
-        sq: sidequest.Sidequest
-        for sq in self.challenge.sidequests:
-            if sq.is_compatible_with(self.version):
-                compatibles.append(sq)
 
-        # Step 2: choose up to 3 randomly
+        # Fetch the project data
+        projects_by_id = fetch_projects(list(project_ids))
+        for cid, project in projects_by_id.items():
+            source = project.get_best_source(self.version)
+            if source is None:
+                for sidequest in sidequests_by_project_id.get(cid):
+                    if sidequest.requires_project_id(cid) and sidequest in eligible_sidequests:
+                        eligible_sidequests.remove(sidequest)
+
+        # Choose up to 3 randomly
         chosen = 0
-        for sq in compatibles:
+        sq: Sidequest
+        for sq in eligible_sidequests:
             # Skip any per-player sidequests if we don't have at least 2 players
             if sq.players_upfront and (not players or len(players) < 2):
                 continue
@@ -129,23 +197,17 @@ class ModPack:
                 self.meta_by_sidequest[sq] = sq_meta
                 for layer in sq.layers:
                     self._add_layer(layer)
-                    for mod in layer.mods:
-                        self.sources_by_mod[mod] = mod.get_best_source(self.version)
+                    for project_meta in layer.projects_by_id.values():
+                        project = projects_by_id.get(project_meta.cid)
+                        self.sources_by_mod[project] = project.get_best_source(self.version)
                 if chosen == 3:
                     break
 
-    def collapse(self,
+    def generate(self,
                  players: list = None):
-        """
-        Takes all layers added and collapses them into a single layer.
-        Ensures only one of each of these:
-        - Terrain mod
-        - Village mod
-
-        :return:
-        """
-        self._select_theme()
-        self._collapse_layers()
+        self._select_challenge()
+        self._select_scenario()
+        self._collect_core_layers()
         self._select_loader_and_version()
         self._select_sidequests(players)
 
@@ -168,6 +230,7 @@ class ModPack:
         return {
             'name': self.get_name(),
             'challenge': self.challenge.to_json(),
+            'scenario': self.scenario.to_json(),
             'version': self.version,
             'sidequests': sq_objs,
             'mods': mod_objs
@@ -176,34 +239,27 @@ class ModPack:
     def _get_next_deps(self,
                        temp_sources_by_mod: dict,
                        level: int = 0) -> dict:
-        from models.mod import CFSource, mods_by_id, Mod
+        from models.project import CFSource, fetch_projects
         logger.warning(f'Pulling dependencies - level {level}')
 
         new_sources_by_mod = {}
+
+        dep_ids = set()
 
         source: CFSource
         for source in temp_sources_by_mod.values():
             for relation in source.dependencies:
                 if relation.get('relationType') == rt_required_dep:
-                    need_fetch = True
-
                     dep_id = relation.get('modId')
-                    m = mods_by_id.get(dep_id)
-                    if not m:
-                        m = Mod(name=None, curseforge_id=dep_id)
-                        mods_by_id[dep_id] = m
-                    elif not m.is_stale():
-                        need_fetch = False
+                    dep_ids.add(dep_id)
 
-                    if need_fetch:
-                        m.fetch_sources()
-                        m.save_sources()
-
-                    source = m.get_best_source(self.version)
-                    if not source:
-                        logger.error(f'Could not find version {self.version} for project {dep_id}')
-                    else:
-                        new_sources_by_mod[m] = source
+        mods_by_id = fetch_projects(list(dep_ids))
+        for dep_id, m in mods_by_id.items():
+            source = m.get_best_source(self.version)
+            if not source:
+                logger.error(f'Could not find version {self.version} for project {dep_id}')
+            else:
+                new_sources_by_mod[m] = source
 
         if new_sources_by_mod:
             new_sources_by_mod.update(self._get_next_deps(new_sources_by_mod, level+1))
@@ -211,10 +267,7 @@ class ModPack:
         return new_sources_by_mod
 
     def pull_dependencies(self):
-        from models.mod import Mod, fetch_info
         self.sources_by_dep = self._get_next_deps(self.sources_by_mod)
-        m: Mod
-        fetch_info([m.curseforge_id for m in self.sources_by_dep.keys()])
 
     def generate_modlist_html(self) -> str:
         comb = self.get_combined_mods()
@@ -222,7 +275,7 @@ class ModPack:
         for mod in comb.keys():
             out.append(f'<li><a href="{mod.curseforge_meta.website_url}">{mod.curseforge_meta.display_name} (by {mod.curseforge_meta.author})</li>')
         out.append('</ul>')
-        return '\n'.join(out)
+        return '\n'.join(out).encode('utf-16','surrogatepass').decode('utf-16')
 
     def generate_manifest_json(self) -> dict:
         comb = self.get_combined_mods()
@@ -256,7 +309,7 @@ class ModPack:
         return out
 
     def generate_modpack_zip(self) -> str:
-        import json
+        import json5 as json
         import os
         import re
         import shutil
@@ -278,30 +331,36 @@ class ModPack:
 
         # dump modlist to file
         with open(f'{temp_output_dir}/modlist.html', 'w') as f:
-            f.write(self.generate_modlist_html())
+            # FIXME: character encoding
+            html_data = self.generate_modlist_html()
+            f.write(html_data)
 
         # dump manifest to file
         with open(f'{temp_output_dir}/manifest.json', 'w') as f:
-            json.dump(self.generate_manifest_json(), fp=f, indent=4)
+            json_data = self.generate_manifest_json()
+            json.dump(json_data, fp=f, indent=4)
 
-        for override in self.result.overrides:
-            # If there is a mod on the list that we don't have, skip
-            for mod in override.mods:
-                if mod not in self.sources_by_mod:
+
+        projects_by_id = {}
+        for project in self.sources_by_mod.keys():
+            projects_by_id[project.curseforge_id] = project
+
+        for layer in self.layers_by_name.values():
+            for cid, project_meta in layer.projects_by_id.items():
+                if cid not in projects_by_id:
                     continue
-            # If the version doesn't match, skip
-            if not re.match(override.versions, self.version):
-                continue
-
-            # Copy the override
-            try:
-                shutil.copytree(
-                    src=f'data/overrides/{override.path}',
-                    dst=temp_output_overrides_dir,
-                    dirs_exist_ok=True
-                )
-            except:
-                logger.error(f'Unable to copy override: {override.path}')
+                for pattern, path in project_meta.overrides.items():
+                    if not re.match(pattern, self.version):
+                        continue
+                    try:
+                        logger.warning(f'{layer.name}.{cid}({pattern}) - Copying override: {path}')
+                        shutil.copytree(
+                            src=f'data/overrides/{path}',
+                            dst=temp_output_overrides_dir,
+                            dirs_exist_ok=True
+                        )
+                    except:
+                        logger.error(f'{layer.name}.{cid}({pattern}) - Unable to copy override: {path}')
         shutil.make_archive(
             base_name=output_name,
             format='zip',
@@ -319,14 +378,7 @@ class ModPack:
 
 def generate(players=None) -> ModPack:
     # TODO: pass in other config and overrides here
-    from random import choices
-    from models.challenge import weights_by_challenge
+
     modpack = ModPack()
-    modpack.challenge = choices(
-        population=list(weights_by_challenge.keys()),
-        weights=list(weights_by_challenge.values()),
-        k=1
-    )[0]
-    logger.info(f'Chose challenge "{modpack.challenge.name}"')
-    modpack.collapse(players)
+    modpack.generate(players)
     return modpack

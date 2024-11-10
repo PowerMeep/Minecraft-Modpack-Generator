@@ -1,149 +1,72 @@
 import logging
+
 logger = logging.getLogger()
 
+key_name = 'name'
+key_projects = 'projects'
+key_project_id = 'project_id'
+key_project_name = 'project_name'
+key_required = 'required'
+key_overrides = 'overrides'
+
 _layer_validation_data = {
-    'name': (str, True),
-    'description': (str, False),
-    'mods': (list, False),
-    'terrain_mod': (list, False),
-    'village_mod': (list, False)
+    key_name: (str, True),
+    key_projects: (list, True)
 }
 
-_override_validation_data = {
-    'mods': (list, False),
-    'versions': (str, False),
-    'path': (str, True)
+_project_validation_data = {
+    key_project_id: (int, True),
+    key_project_name: (str, False),
+    key_required: (bool, False),
+    key_overrides: (dict, False)
 }
 
 
-json_path = 'data/layers.json'
+json_path = 'data/layers'
 
 
-class Override:
+class ProjectMeta:
     def __init__(self,
-                 path=str,
-                 mods=None,
-                 versions=None):
-        self.mods = mods or []
-        self.versions = versions or []
-        self.path = path
+                 cid: int = None,
+                 name: str = None,
+                 required: bool = True,
+                 overrides: dict = None):
+        self.cid = cid
+        self.name = name
+        self.required = required
+        self.overrides = overrides or {}
+
+    def from_json(self, obj):
+        self.cid = obj.get(key_project_id)
+        self.name = obj.get(key_project_name)
+        self.required = obj.get(key_required)
+        self.overrides = obj.get(key_overrides) or {}
 
 
 class Layer:
     def __init__(self,
                  name='Unnamed Layer',
-                 description='A layer of mods',
-                 terrain_mod=None,
-                 village_mod=None,
-                 mods=None,
-                 overrides=None):
+                 projects=None):
         self.name = name
-        self.description = description
-        self.terrain_mod = terrain_mod
-        self.village_mod = village_mod
-        self.mods = mods or []
-        self.overrides = overrides or []
+        self.projects_by_id = {}
+        if projects:
+            for p in projects:
+                pm = ProjectMeta()
+                pm.from_json(p)
+                self.projects_by_id[pm.cid] = pm
+        self.references = 0
 
     def __str__(self):
         return self.name
 
-    def add_mod(self, mod):
-        from random import choice
-        if type(mod) is list:
-            mod = choice(mod)[0]
-        from models.mod import mods_by_name
-        if mod not in self.mods and mod != mods_by_name.get('Vanilla'):
-            logger.debug(f'  > Adding mod: {mod.name}')
-            self.mods.append(mod)
 
-    def update(self, other_layer):
-        if other_layer is None:
-            return
-        if other_layer == layers_by_name.get('Vanilla'):
-            return
-        if other_layer.terrain_mod and not self.terrain_mod:
-            self.terrain_mod = other_layer.terrain_mod
-        if other_layer.village_mod and not self.village_mod:
-            self.village_mod = other_layer.village_mod
-        for mod in other_layer.mods:
-            self.add_mod(mod)
-        self.overrides.extend(other_layer.overrides)
-
-    def _cache_fetch_curseforge(self):
-        from models.mod import Mod, fetch_info
-
-        mod: Mod
-        mods_by_id = {}
-        for mod in self.mods:
-            if mod.curseforge_id is None:
-                logger.error(f'{mod.name} has no Curseforge Id')
-                continue
-
-            if not mod.is_stale():
-                logger.debug(f'{mod.name} sources are recent enough')
-                continue
-            else:
-                mods_by_id[mod.curseforge_id] = mod
-
-        if len(mods_by_id) == 0:
-            return
-
-        logger.warning(f'{len(mods_by_id)} mods are stale and will be updated')
-        fetch_info(list(mods_by_id.keys()))
-
-        for mod in mods_by_id.values():
-            mod.fetch_sources()
-            mod.save_sources()
-
-    def fetch_metadata(self):
-        self._cache_fetch_curseforge()
-
-
-layers_by_name = {
-    'Vanilla': Layer('Vanilla')
-}
-
-
-def _get_mods(element):
-    from models.load_util import get_item
-    from models.mod import mods_by_name
-    return get_item(
-        element=element,
-        element_type='mod',
-        store=mods_by_name
-    )
-
-
-def _get_overrides(overrides, mod_name):
-    if overrides is None:
-        return None
-    out = []
-    from models.load_util import validate_type
-    for obj in overrides:
-        errors = validate_type(
-            mod_name,
-            _override_validation_data,
-            obj
-        )
-        if errors:
-            for error in errors:
-                logger.error(error)
-            continue
-
-        out.append(
-            Override(
-                mods=obj.get('mods'),
-                versions=obj.get('versions'),
-                path=obj.get('path')
-            )
-        )
-    return out
+layers_by_name = {}
 
 
 def from_json(obj: dict):
     from models.load_util import validate_type
     errors = validate_type(
-        obj.get('name'),
+        obj.get(key_name),
         _layer_validation_data,
         obj
     )
@@ -152,18 +75,29 @@ def from_json(obj: dict):
             logger.error(error)
         return
 
-    logger.info(f'Loading Layer: {obj.get("name")}')
+    for project in obj.get(key_projects):
+        errors = validate_type(
+            project.get(key_project_id),
+            _project_validation_data,
+            project
+        )
+        if errors:
+            for error in errors:
+                logger.error(error)
+            return
+
+    logger.info(f'Loading Layer: {obj.get(key_name)}')
     l = Layer(
-        name=obj.get('name'),
-        description=obj.get('description'),
-        terrain_mod=_get_mods(obj.get('terrain_mod')),
-        village_mod=_get_mods(obj.get('village_mod')),
-        mods=_get_mods(obj.get('mods')),
-        overrides=_get_overrides(obj.get('overrides'), obj.get('name'))
+        name=obj.get(key_name),
+        projects=obj.get(key_projects)
     )
     layers_by_name[l.name] = l
 
 
 def load_layers():
     from models.load_util import load_named_items
-    load_named_items(json_path, from_json)
+    import os
+    for item in os.listdir(json_path):
+        path = f'{json_path}/{item}'
+        if os.path.isfile(path):
+            load_named_items(path, from_json)

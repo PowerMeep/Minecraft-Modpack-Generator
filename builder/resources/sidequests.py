@@ -1,4 +1,4 @@
-import json
+import json5 as json
 
 from models.sidequest import json_path
 

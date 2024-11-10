@@ -1,6 +1,6 @@
-import json
+import json5 as json
 
-from models.mod import json_path
+from models.scenario import json_path
 
 
 async def get():
