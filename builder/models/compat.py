@@ -44,7 +44,7 @@ def from_json(obj):
         overrides=obj.get('overrides')
     )
 
-    logger.info(f'Loaded Scenario: {com.name}')
+    logger.info(f'Loaded Compat: {com.name}')
     all_compats.append(com)
 
 
