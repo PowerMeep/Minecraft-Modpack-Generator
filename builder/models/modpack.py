@@ -31,6 +31,9 @@ class ModPack:
         self.challenge: Challenge = None
         self.scenario: Scenario = None
 
+        self.villages = None
+        self.terrain = None
+
         self.layers_by_name = {}
         self.version = None
         self.modloader = None
@@ -86,41 +89,46 @@ class ModPack:
         logger.info(f'> Adding layer: {layer.name}')
         self.layers_by_name[layer.name] = layer
 
-    def _collect_core_layers(self):
+    def _collect_scenario_layers(self):
         terrains = set()
         villages = set()
 
         layer: Layer
-        if self.scenario:
-            for layer in self.scenario.layers:
-                self._add_layer(layer)
-            for layer in self.scenario.terrain:
-                terrains.add(layer)
-            for layer in self.scenario.villages:
-                villages.add(layer)
+        for layer in self.scenario.layers:
+            self._add_layer(layer)
+        for layer in self.scenario.terrain:
+            terrains.add(layer)
+        for layer in self.scenario.villages:
+            villages.add(layer)
+        if not self.villages:
+            self.villages = choice(list(villages), None)
+        if not self.terrain:
+            self.terrain = choice(list(terrains), None)
 
+
+    def _collect_challenge_layers(self):
+        terrains = set()
+        villages = set()
+        layer: Layer
         for layer in self.challenge.layers:
             self._add_layer(layer)
         for layer in self.challenge.terrain:
             terrains.add(layer)
         for layer in self.challenge.villages:
             villages.add(layer)
-
-        if village := choice(list(villages), None):
-            self._add_layer(village)
-
-        if terrain := choice(list(terrains), None):
-            self._add_layer(terrain)
+        if not self.villages:
+            self.villages = choice(list(villages), None)
+        if not self.terrain:
+            self.terrain = choice(list(terrains), None)
 
     def _select_loader_and_version(self):
         project_ids = set()
-        layers_by_project_id = {}
         layer: Layer
         for layer in self.layers_by_name.values():
             project_meta: ProjectMeta
             for project_meta in layer.projects_by_id.values():
-                project_ids.add(project_meta.cid)
-                layers_by_project_id.setdefault(project_meta.cid, []).append(layer)
+                if project_meta.required:
+                    project_ids.add(project_meta.cid)
 
         # Fetch the project data
         projects_by_id = fetch_projects(list(project_ids))
@@ -144,9 +152,27 @@ class ModPack:
             if best is None or best[1] < score:
                 best = version, score
 
-        # Remove incompatible layers
         self.version = best[0]
         logger.info(f'Selected minecraft version {self.version}')
+
+        from apis import curseforge
+        self.modloader = curseforge.get_recommended_modloader(self.version)
+        if not self.modloader:
+            logger.error(f'Unable to get a recommended loader for version {self.version}')
+        else:
+            logger.info(f'Selected modloader: {self.modloader}')
+
+    def _collect_sources(self):
+        project_ids = set()
+        layers_by_project_id = {}
+        layer: Layer
+        for layer in self.layers_by_name.values():
+            project_meta: ProjectMeta
+            for project_meta in layer.projects_by_id.values():
+                project_ids.add(project_meta.cid)
+                layers_by_project_id.setdefault(project_meta.cid, []).append(layer)
+        projects_by_id = fetch_projects(list(project_ids))
+
         for cid, project in projects_by_id.items():
             source = project.get_best_source(self.version)
             if not source:
@@ -164,14 +190,6 @@ class ModPack:
                 if source:
                     self.sources_by_mod[project] = source
 
-        # Select the modloader
-        from apis import curseforge
-        self.modloader = curseforge.get_recommended_modloader(self.version)
-        if not self.modloader:
-            logger.error(f'Unable to get a recommended loader for version {self.version}')
-        else:
-            logger.info(f'Selected modloader: {self.modloader}')
-
     def _select_sidequests(self,
                            sidequest_names: list = None,
                            player_names: list = None):
@@ -186,7 +204,6 @@ class ModPack:
                     for project_meta in layer.projects_by_id.values():
                         project_ids.add(project_meta.cid)
                         sidequests_by_project_id.setdefault(project_meta.cid, []).append(sidequest)
-
 
         # Fetch the project data
         projects_by_id = fetch_projects(list(project_ids))
@@ -232,8 +249,16 @@ class ModPack:
                  player_names: list = None):
         self._select_challenge(challenge_name)
         self._select_scenario(scenario_name)
-        self._collect_core_layers()
-        self._select_loader_and_version()
+        if self.scenario:
+            # If a scenario is present, select the loader based on that.
+            self._collect_scenario_layers()
+            self._select_loader_and_version()
+
+        self._collect_challenge_layers()
+        if not self.version:
+            self._select_loader_and_version()
+
+        self._collect_sources()
         self._select_sidequests(
             sidequest_names=sidequest_names,
             player_names=player_names

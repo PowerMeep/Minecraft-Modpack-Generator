@@ -37,9 +37,10 @@ class ProjectMeta:
         self.overrides = overrides or {}
 
     def from_json(self, obj):
+        required = obj.get(key_required)
         self.cid = obj.get(key_project_id)
         self.name = obj.get(key_project_name)
-        self.required = obj.get(key_required)
+        self.required = required if required is not None else True
         self.overrides = obj.get(key_overrides) or {}
 
 

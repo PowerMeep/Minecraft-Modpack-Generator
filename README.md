@@ -30,15 +30,14 @@ These just serve to create better integration between other things that are pres
 ## Roadmap
 
 ### General TODO:
-- [ ] A short description (< 100 chars) for Discord dropdowns
-- [ ] Add gravity sidequest (Fabric or 1.12 Forge)
-- [ ] Add lifelink sidequest (Bukkit)
-- [ ] Dawn Era
-- [ ] Seed the randomness
-- [ ] Figure out modrinth multiple project scrape
-- [ ] Make the pretty version table
-- [ ] Test ALL layers to make sure they work independently
-  - [ ] Implement some method of creating a modpack with arbitrary layers
+- Add gravity sidequest (Fabric or 1.12 Forge)
+- Add lifelink sidequest (Bukkit)
+- Seed the randomness
+- Figure out modrinth multiple project scrape
+- Test ALL layers to make sure they work independently
+  - Implement some method of creating a modpack with arbitrary layers
+- Scrutinize layers for which mods are really "required"
+- Rather than challenges also having terrain and villages, use one-off scenarios with no names? Less duplicate code.
 
 ### Milestone 1
 **The builder consistently assembles sensible configurations.**
@@ -56,6 +55,7 @@ These just serve to create better integration between other things that are pres
   - [x] DM players their specific configurations
   - [x] Discord post uses better links
   - [x] Other configs
+- [ ] A short description (< 100 chars) for Discord dropdowns
 
 ### Milestone 3
 **The builder is able to assemble zip files that can be imported by clients.**
@@ -71,9 +71,13 @@ These just serve to create better integration between other things that are pres
   - Is this necessary?
   - Every page refresh would have to generate a zip and attach a link to it
 - [ ] Delete old files from temp and build
+- [ ] Generated thumbnails
 
 ### Milestone 4
 **The builder is able to automatically start a Minecraft server.**
+- [ ] Overrides for server.properties file
+  - [ ] Hardcore
+  - [ ] Generate structures
 - [ ] Some kind of local "registry" to copy already-downloaded files from
 - [ ] Ability to generate a Docker Compose for the itzg image
 - [ ] Ability to create / stop / restart / destroy images using that compose

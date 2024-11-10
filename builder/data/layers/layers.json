@@ -273,6 +273,38 @@
     ]
   },
   {
+    // TODO: don't generate ANY structures?
+    "name": "dawn era",
+    "projects": [
+      {
+        "project_id": 965477,
+        "project_name": "The Dawn Era"
+      },
+      {
+        "project_id": 426558,
+        "project_name": "Alex's Mobs",
+        "required": false
+      },
+      {
+        "project_id": 242830,
+        "project_name": "Exotic Birds",
+        "required": false
+      },
+      {
+        "project_id": 398521,
+        "project_name": "Farmer's Delight",
+        "required": false
+      },
+      {
+        "project_id": 233258,
+        "project_name": "Bad Mobs",
+        "overrides": {
+          ".*": "bad-mobs/no-monsters"
+        }
+      }
+    ]
+  },
+  {
     "name": "villagistics",
     "projects": [
       {
@@ -391,7 +423,8 @@
       },
       {
         "project_id": 74072,
-        "project_name": "Tinkers' Construct"
+        "project_name": "Tinkers' Construct",
+        "required": false
       },
       {
         "project_id": 328085,
@@ -407,11 +440,13 @@
       },
       {
         "project_id": 246640,
-        "project_name": "Mystical Agriculture"
+        "project_name": "Mystical Agriculture",
+        "required": false
       },
       {
         "project_id": 384508,
-        "project_name": "Resourceful Bees"
+        "project_name": "Resourceful Bees",
+        "required": false
       }
     ]
   },

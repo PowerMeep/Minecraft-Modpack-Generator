@@ -36,7 +36,7 @@ class Sidequest:
 
     def requires_project_id(self, project_id):
         for layer in self.layers:
-            if meta := layer.projects_by_id.get(project_id) is not None:
+            if (meta := layer.projects_by_id.get(project_id)) is not None:
                 if meta.required:
                     return True
         return False

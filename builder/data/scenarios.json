@@ -172,6 +172,19 @@
     ]
   },
   {
+    "name": "Back in Time",
+    "description": "Dinosaurs everywhere, and no signs of civilized life.",
+    "terrain": [
+      // Dawn era spawns based on biome, so only vanilla is properly supported.
+      // This might be solvable with compats
+      "vanilla terrain"
+    ],
+    "villages": ["no villages"],
+    "layers": [
+      "dawn era"
+    ]
+  },
+  {
     "name": "High Seas",
     "description": "A vast ocean expanse teeming with treachery.",
     "terrain": ["continents"],
