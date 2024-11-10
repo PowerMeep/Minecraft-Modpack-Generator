@@ -23,18 +23,17 @@ def load():
     load_challenges()
     load_compats()
 
-    logger.debug('LAYER REFERENCES')
     for l in models.layer.layers_by_name.values():
-        logger.info(f'{l.name}: {l.references}')
+        if l.references == 0:
+            logger.warning(f'Layer "{l.name}" has no references!')
 
-    logger.debug('SIDEQUEST REFERENCES')
-    for l in models.sidequest.sidequests_by_name.values():
-        logger.info(f'{l.name}: {l.references}')
-
-    logger.debug('SCENARIO REFERENCES')
     for l in models.scenario.scenarios_by_name.values():
-        logger.info(f'{l.name}: {l.references}')
+        if l.references == 0:
+            logger.warning(f'Scenario "{l.name}" has no references!')
 
+    for l in models.sidequest.sidequests_by_name.values():
+        if l.references == 0:
+            logger.warning(f'Sidequest "{l.name}" has no references!')
 
 def start():
     import bot
