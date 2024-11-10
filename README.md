@@ -30,12 +30,15 @@ These just serve to create better integration between other things that are pres
 ## Roadmap
 
 ### General TODO:
-- [ ] Add gravity sidequest (Fabric)
+- [ ] A short description (< 100 chars) for Discord dropdowns
+- [ ] Add gravity sidequest (Fabric or 1.12 Forge)
+- [ ] Add lifelink sidequest (Bukkit)
 - [ ] Dawn Era
-- [ ] Implement compats
 - [ ] Seed the randomness
 - [ ] Figure out modrinth multiple project scrape
 - [ ] Make the pretty version table
+- [ ] Test ALL layers to make sure they work independently
+  - [ ] Implement some method of creating a modpack with arbitrary layers
 
 ### Milestone 1
 **The builder consistently assembles sensible configurations.**
@@ -47,12 +50,12 @@ These just serve to create better integration between other things that are pres
   - [x] Per-player sidequests
   - [x] Players in params
   - [x] Players in request body
-  - [ ] Other configs
 - [x] Dockerfile
 - [x] Discord
   - [x] Generate and post a configuration
   - [x] DM players their specific configurations
   - [x] Discord post uses better links
+  - [x] Other configs
 
 ### Milestone 3
 **The builder is able to assemble zip files that can be imported by clients.**
