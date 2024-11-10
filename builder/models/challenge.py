@@ -6,8 +6,12 @@ _validation_data = {
     'description': (str, True),
     'duration': (str, True),
     'layers': (list, True),
+    'villages': (list, False),
+    'terrain': (list, False),
+    'synced': (bool, False),
+    'hardcore': (bool, False),
     'sidequests': (list, True),
-    'themes': (list, False)
+    'scenarios': (list, False)
 }
 
 json_path = 'data/challenges.json'
@@ -18,15 +22,23 @@ class Challenge:
                  name,
                  description,
                  duration,
+                 hardcore: bool = False,
+                 synced: bool = False,
                  layers: list = None,
-                 themes: list = None,
+                 villages: list = None,
+                 terrain: list = None,
+                 scenarios: list = None,
                  sidequests: list = None):
         self.name = name
         self.description = description
         self.duration = duration
-        self.themes = themes or []
-        self.layers = layers or []
+        self.synced = synced
+        self.hardcore = hardcore
+        self.scenarios = scenarios or []
         self.sidequests = sidequests or []
+        self.layers = layers or []
+        self.villages = villages or []
+        self.terrain = terrain or []
 
     def to_json(self) -> dict:
         return {
@@ -50,6 +62,16 @@ def _get_sidequests(element):
     )
 
 
+def _get_scenarios(element):
+    from models.load_util import get_item
+    from models.scenario import scenarios_by_name
+    return get_item(
+        element=element,
+        element_type='scenario',
+        store=scenarios_by_name
+    )
+
+
 def from_json(obj: dict):
     from models.load_util import validate_type, get_layers
     errors = validate_type(
@@ -66,8 +88,10 @@ def from_json(obj: dict):
         name=obj.get('name'),
         description=obj.get('description'),
         duration=obj.get('duration'),
+        synced=obj.get('synced'),
+        hardcore=obj.get('hardcore'),
         layers=get_layers(obj.get('layers')),
-        themes=get_layers(obj.get('themes')),
+        scenarios=_get_scenarios(obj.get('scenarios')),
         sidequests=_get_sidequests(obj.get('sidequests')),
     )
     logger.info(f'Loaded challenge: {c.name}')

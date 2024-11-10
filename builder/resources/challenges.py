@@ -1,4 +1,4 @@
-import json
+import json5 as json
 
 from models.challenge import json_path
 

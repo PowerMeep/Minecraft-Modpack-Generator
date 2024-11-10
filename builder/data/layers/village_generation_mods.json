@@ -1,0 +1,22 @@
+[
+  {
+    "name": "vanilla villages",
+    "projects": []
+  },
+  {
+    "name": "better villages",
+    "projects": [
+      {
+        "project_id": 615352
+      }
+    ]
+  },
+  {
+    "name": "overhauled villages",
+    "projects": [
+      {
+        "project_id": 623908
+      }
+    ]
+  }
+]

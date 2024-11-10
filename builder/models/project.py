@@ -18,8 +18,6 @@ if stale_time is not None:
         logger.error(f'Unable to parse cache stale time: {stale_time}')
         stale_time = None
 
-json_path = 'data/mods.json'
-
 db_name = 'data/cache.db'
 
 table_projects = 'projects'
@@ -88,23 +86,12 @@ class CFSource:
         })
 
 
-class Mod:
+class Project:
     def __init__(self,
-                 name,
                  curseforge_id: int = None):
-        # The id of this mod, relative to this application
-        self.name = name
-
-        # The id of this mod on curseforge
         self.curseforge_id = curseforge_id
-
-        # The metadata retrieved from CF
         self.curseforge_meta = None
-
-        # Information for the most recent artifacts
         self.sources_by_version = {}
-
-        # The last time this mod's data was updated
         self.last_update = None
 
     def clear_sources(self):
@@ -157,14 +144,14 @@ class Mod:
 
     def is_stale(self):
         if self.last_update is None:
-            logger.warning(f'Mod {self.curseforge_id} has no last update time')
+            logger.warning(f'Project {self.curseforge_id} has no last update time')
             return True
         if stale_time is None:
             return False
         oldest = datetime.now(timezone.utc) - stale_time
         stale = self.last_update <= oldest
         if stale:
-            logger.info(f'Mod {self.curseforge_id} is stale. {self.last_update.strftime(time_format)} <= {oldest.strftime(time_format)}')
+            logger.info(f'Project {self.curseforge_id} is stale. {self.last_update.strftime(time_format)} <= {oldest.strftime(time_format)}')
         return stale
 
     def fetch_sources(self,
@@ -224,48 +211,6 @@ class Mod:
         connection.commit()
         connection.close()
 
-    def __str__(self):
-        return self.name
-
-
-mod_ids_by_name = {
-    'Vanilla': -1
-}
-
-
-def from_json(obj: dict):
-    from models.load_util import validate_type
-    errors = validate_type(
-        obj.get('name'),
-        _validation_data,
-        obj
-    )
-    if errors:
-        for error in errors:
-            logger.error(error)
-        return
-
-    m = Mod(
-        name=obj.get('name'),
-        curseforge_id=obj.get('curseforge_id')
-    )
-    logger.info(f'Loaded mod: {m.name}')
-    return m
-
-
-def load_mods():
-    logger.warning(f'Reading from file: {json_path}')
-    import json
-    with open(json_path) as f:
-        all_items = json.load(fp=f)
-        for m_dict in all_items:
-            if 'name' not in m_dict:
-                logger.error(f'Skipping unnamed item: {json.dumps(m_dict)}')
-            else:
-                m = from_json(m_dict)
-                if m.curseforge_id:
-                    mod_ids_by_name[m.name] = m.curseforge_id
-
 
 def _setup_cache():
     connection = sqlite3.connect(db_name)
@@ -292,9 +237,9 @@ def _setup_cache():
     connection.close()
 
 
-def fetch_mods(mod_ids) -> dict:
+def fetch_projects(cids) -> dict:
     projects_by_id = {}
-    all_ids = set(mod_ids)
+    all_ids = set(cids)
     if -1 in all_ids:
         all_ids.remove(-1)
 
@@ -320,18 +265,18 @@ def fetch_mods(mod_ids) -> dict:
         cid  = time_row[0]
         date = time_row[1]
         meta = time_row[2]
-        mod = Mod(name=None, curseforge_id=cid)
-        mod.last_update = datetime.strptime(date, time_format)
+        project = Project(curseforge_id=cid)
+        project.last_update = datetime.strptime(date, time_format)
 
         meta = json.loads(meta) if meta else None
         if meta:
-            mod.curseforge_meta = CFMetadata()
-            mod.curseforge_meta.from_json(meta)
+            project.curseforge_meta = CFMetadata()
+            project.curseforge_meta.from_json(meta)
 
-        projects_by_id[cid] = mod
+        projects_by_id[cid] = project
 
-        if not mod.is_stale():
-            # A cached version of this mod was successfully retrieved.
+        if not project.is_stale():
+            # A cached version of this project was successfully retrieved.
             # There is no need to fetch more data from remote.
             all_ids.remove(cid)
             rows = source_rows_by_id.get(cid)
@@ -344,7 +289,7 @@ def fetch_mods(mod_ids) -> dict:
 
                     source = CFSource()
                     source.from_json(meta)
-                    mod.add_source(
+                    project.add_source(
                         key=version,
                         source=source
                     )
@@ -361,25 +306,25 @@ def fetch_mods(mod_ids) -> dict:
             for info_data in info_datas:
                 cid = info_data.get('id')
                 if cid in projects_by_id:
-                    # This mod is being updated
-                    mod = projects_by_id.get(cid)
+                    # This project is being updated
+                    project = projects_by_id.get(cid)
                 else:
-                    # This mod is new
-                    mod = Mod(name=None, curseforge_id=cid)
-                    projects_by_id[cid] = mod
+                    # This project is new
+                    project = Project(curseforge_id=cid)
+                    projects_by_id[cid] = project
                     all_ids.remove(cid)
 
                 # Set the metadata
-                mod.curseforge_meta = CFMetadata(
+                project.curseforge_meta = CFMetadata(
                     display_name = info_data.get('name'),
                     website_url = info_data.get('links').get('websiteUrl')
                 )
-                mod.fetch_sources()
-                mod.save_sources()
+                project.fetch_sources()
+                project.save_sources()
 
     # At this point, the set SHOULD be empty.
     # If there's anything remaining, it's an error.
     if len(all_ids) > 0:
-        logger.error(f'Unable to find any information on these mods: {list(all_ids)}')
+        logger.error(f'Unable to find any information on these projects: {list(all_ids)}')
 
     return projects_by_id

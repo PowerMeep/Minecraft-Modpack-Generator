@@ -1,0 +1,535 @@
+/* "project_name" is optional
+ * "required" is optional and assumed to be true
+ * "name" must match exactly in any derivative objects
+ */
+
+[
+  {
+    "name": "alexs caves",
+    "projects": [
+      {
+        "project_id": 924854,
+        "project_name": "Alex's Caves"
+      }
+    ]
+  },
+  {
+    "name": "twilight forest",
+    "projects": [
+      {
+        "project_id": 227639,
+        "project_name": "Twilight Forest"
+      }
+    ]
+  },
+  {
+    "name": "cobblemon",
+    "projects": [
+      {
+        "project_id": 687131,
+        "project_name": "Cobblemon"
+      },
+      {
+        "project_id": 233258,
+        "project_name": "Bad Mobs",
+        "overrides": {
+          ".*": "bad-mobs/only-cobblemon"
+        }
+      }
+    ]
+  },
+  {
+    "name": "zombies",
+    "projects": [
+      {
+        "project_id": 237754,
+        "project_name": "Zombie Awareness"
+      },
+      {
+        "project_id": 485779,
+        "project_name": "The Hordes"
+      },
+      {
+        "project_id": 298408,
+        "project_name": "Mob Sunscreen"
+      },
+      {
+        "project_id": 312822,
+        "project_name": "Tissou's Zombie Pack"
+      },
+      {
+        "project_id": 233258,
+        "project_name": "Bad Mobs",
+        "overrides": {
+          ".*": "bad-mobs/only-zombies"
+        }
+      },
+      {
+        "project_id": 414350,
+        "project_name": "Configurable Extra Mob Drops",
+        "overrides": {
+          ".*": "configurable-extra-mob-drops/zombies-drop-all"
+        }
+      }
+    ]
+  },
+  {
+    "name": "aether",
+    "projects": [
+      {
+        "project_id": 255308,
+        "project_name": "Aether"
+      }
+    ]
+  },
+  {
+    "name": "sculk horde",
+    "projects": [
+      {
+        "project_id": 501766,
+        "project_name": "Sculk Horde"
+      }
+    ]
+  },
+  {
+    "name": "ice and fire",
+    "projects": [
+      {
+        "project_id": 264231,
+        "project_name": "Ice and Fire"
+      },
+      {
+        "project_id": 363703,
+        "project_name": "Goblin Traders"
+      },
+      {
+        "project_id": 535096,
+        "project_name": "Goblins & Dungeons"
+      }
+    ]
+  },
+  {
+    "name": "ars nouveau",
+    "projects": [
+      {
+        "project_id": 401955,
+        "project_name": "Ars Nouveau"
+      }
+    ]
+  },
+  {
+    "name": "snowball earth",
+    "projects": [
+      {
+        "project_id": 353942,
+        "project_name": "Snow Under Trees"
+      },
+      {
+        "project_id": 308663,
+        "project_name": "Snow! Real Magic!"
+      },
+      {
+        "project_id": 344436,
+        "project_name": "Snowballs Freeze Mobs"
+      },
+      {
+        "project_id": 566142,
+        "project_name": "Snowy Spirit"
+      },
+      {
+        "project_id": 373774,
+        "project_name": "Rare Ice"
+      },
+      {
+        "project_id": 566142,
+        "project_name": "Snowy Spirit"
+      },
+      {
+        "project_id": 811803,
+        "project_name": "Spawn Animations"
+      },
+      {
+        "project_id": 469185,
+        "project_name": "Raven Coffee"
+      },
+      {
+        "project_id": 393321,
+        "project_name": "Primal Winter",
+        "overrides": {
+          ".*": "primal-winter/allow-setting-weather"
+        }
+      }
+    ]
+  },
+  {
+    "name": "ships",
+    "projects": [
+      {
+        "project_id": 654384,
+        "project_name": "Eureka"
+      },
+      {
+        "project_id": 258371,
+        "project_name": "Valkyrien Skies"
+      }
+    ]
+  },
+  {
+    "name": "grappling hooks",
+    "projects": [
+      {
+        "project_id": 238911,
+        "project_name": "Grappling Hooks"
+      }
+    ]
+  },
+  {
+    "name": "incapacitated",
+    "projects": [
+      {
+        "project_id": 528135,
+        "project_name": "Incapacitated"
+      }
+    ]
+  },
+  {
+    "name": "first aid",
+    "projects": [
+      {
+        "project_id": 276837,
+        "project_name": "First Aid"
+      }
+    ]
+  },
+  {
+    "name": "weather",
+    "projects": [
+      {
+        "project_id": 237746,
+        "project_name": "Weather2"
+      }
+    ]
+  },
+  {
+    "name": "aquaculture",
+    "projects": [
+      {
+        "project_id": 60028,
+        "project_name": "Aquaculture 2"
+      }
+    ]
+  },
+  {
+    "name": "oceanic",
+    "projects": [
+      {
+        "project_id": 536254,
+        "project_name": "Aquamirae"
+      },
+      {
+        "project_id": 326895,
+        "project_name": "Upgrade Aquatic"
+      },
+      {
+        "project_id": 243121,
+        "project_name": "Quark"
+      }
+    ]
+  },
+  {
+    "name": "natural",
+    "projects": [
+      {
+        "project_id": 426558,
+        "project_name": "Alex's Mobs"
+      },
+      {
+        "project_id": 291874,
+        "project_name": "Serene Seasons"
+      },
+      {
+        "project_id": 242830,
+        "project_name": "Exotic Birds"
+      },
+      {
+        "project_id": 339184,
+        "project_name": "Realistic Horse Genetics"
+      },
+      {
+        "project_id": 313213,
+        "project_name": "Genetic Animals"
+      },
+      {
+        "project_id": 398521,
+        "project_name": "Farmer's Delight"
+      },
+      {
+        "project_id": 233258,
+        "project_name": "Bad Mobs",
+        "overrides": {
+          ".*": "bad-mobs/no-monsters"
+        }
+      }
+    ]
+  },
+  {
+    "name": "villagistics",
+    "projects": [
+      {
+        "project_id": 345854,
+        "project_name": "Villager Names"
+      },
+      {
+        "project_id": 309516,
+        "project_name": "Bountiful"
+      },
+      {
+        "project_id": 347381,
+        "project_name": "Village Spawn Point"
+      },
+      {
+        "project_id": 452299,
+        "project_name": "Random Village Names"
+      },
+      {
+        "project_id": 245755,
+        "project_name": "Waystones"
+      },
+      {
+        "project_id": 254268,
+        "project_name": "Torchmaster"
+      }
+    ]
+  },
+  {
+    "name": "hitman",
+    "projects": [
+      {
+        "project_id": 391390,
+        "project_name": "Identity"
+      },
+      {
+        "project_id": 377858,
+        "project_name": "Player Tracking Compass"
+      },
+      {
+        "project_id": 479134,
+        "project_name": "Hidden Names"
+      }
+    ]
+  },
+  {
+    "name": "mounts",
+    "projects": [
+      {
+        "project_id": 247093,
+        "project_name": "Craftable Saddles"
+      },
+      {
+        "project_id": 852670,
+        "project_name": "Mob Lassos"
+      },
+      {
+        "project_id": 339184,
+        "project_name": "Realistic Horse Genetics"
+      }
+    ]
+  },
+  {
+    "name": "tough as nails",
+    "projects": [
+      {
+        "project_id": 246391,
+        "project_name": "Tough as Nails"
+      },
+      {
+        "project_id": 310383,
+        "project_name": "Armor Underwear"
+      }
+    ]
+  },
+  {
+    "name": "combatitive",
+    "projects": [
+      {
+        "project_id": 639842,
+        "project_name": "Better Combat"
+      },
+      {
+        "project_id": 678036,
+        "project_name": "Combat Roll"
+      },
+      {
+        "project_id": 278141,
+        "project_name": "Spartan Weaponry"
+      }
+    ]
+  },
+  {
+    "name": "decor",
+    "projects": [
+      {
+        "project_id": 538214,
+        "project_name": "Handcrafted"
+      },
+      {
+        "project_id": 362528,
+        "project_name": "Decorative Blocks"
+      },
+      {
+        "project_id": 412082,
+        "project_name": "Supplementaries"
+      }
+    ]
+  },
+  {
+    "name": "resourceful",
+    "projects": [
+      {
+        "project_id": 223852,
+        "project_name": "Storage Drawers"
+      },
+      {
+        "project_id": 74072,
+        "project_name": "Tinkers' Construct"
+      },
+      {
+        "project_id": 328085,
+        "project_name": "Create"
+      },
+      {
+        "project_id": 309927,
+        "project_name": "Curios"
+      },
+      {
+        "project_id": 422301,
+        "project_name": "Sophisticated Backpacks"
+      },
+      {
+        "project_id": 246640,
+        "project_name": "Mystical Agriculture"
+      },
+      {
+        "project_id": 384508,
+        "project_name": "Resourceful Bees"
+      }
+    ]
+  },
+  {
+    "name": "builder",
+    "projects": [
+      {
+        "project_id": 399558,
+        "project_name": "Construction Wands"
+      },
+      {
+        "project_id": 252848,
+        "project_name": "Nature's Compass"
+      }
+    ]
+  },
+  {
+    "name": "essentials",
+    "projects": [
+      {
+        "project_id": 324717,
+        "project_name": "Jade",
+        "required": false
+      },
+      {
+        "project_id": 314906,
+        "project_name": "FTB Chunks",
+        "required": false
+      },
+      {
+        "project_id": 361276,
+        "project_name": "Lootr",
+        "required": false
+      },
+      {
+        "project_id": 523013,
+        "project_name": "Randomium",
+        "required": false
+      },
+      {
+        "project_id": 238222,
+        "project_name": "Just Enough Items",
+        "required": false
+      },
+      {
+        "project_id": 256717,
+        "project_name": "Clumps",
+        "required": false
+      },
+      {
+        "project_id": 233019,
+        "project_name": "AI Improvements",
+        "required": false
+      },
+      {
+        "project_id": 316582,
+        "project_name": "Corpse",
+        "required": false
+      },
+      {
+        "project_id": 230976,
+        "project_name": "Fast Leaf Decay",
+        "required": false
+      },
+      {
+        "project_id": 248787,
+        "project_name": "Appleskin",
+        "required": false
+      },
+      {
+        "project_id": 416089,
+        "project_name": "Simple Voice Chat",
+        "required": false
+      },
+      {
+        "project_id": 535489,
+        "project_name": "Sound Physics",
+        "required": false
+      }
+    ]
+  },
+  {
+    "name": "sunburn",
+    "projects": [
+      {
+        "project_id": 484945,
+        "project_name": "Burn in the Sun",
+        "overrides": {
+          ".*": "burn-in-the-sun/players-burn"
+        }
+      }
+    ]
+  },
+  {
+    "name": "blackout",
+    "projects": [
+      {
+        "project_id": 337243,
+        "project_name": "True Darkness"
+      }
+    ]
+  },
+  {
+    "name": "insomnia",
+    "projects": [
+      {
+        "project_id": 419092,
+        "project_name": "Sleepn't"
+      }
+    ]
+  },
+  {
+    "name": "physics pro",
+    "projects": [
+      {
+        "project_id": 442735,
+        "project_name": "Physics Pro"
+      }
+    ]
+  }
+]

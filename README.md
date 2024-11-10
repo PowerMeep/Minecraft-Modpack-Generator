@@ -13,6 +13,9 @@ The final modpack will have a name, description, a modloader, a version, and a l
 
 Noteably, there will only ever be one village or terrain mod.
 
+### Scenarios
+The **Scenario** is the setting of the challenge.
+
 ### Layers
 **Layers** are a collection of mods that and configurations that have a high compatibility and serve a specific theme.
 
@@ -29,33 +32,12 @@ This is needed to generate player-specific configurations.
 ## Roadmap
 
 ### General TODO:
-- [ ] Add gravity sidequest
-- [ ] Add skyblock theme
+- [ ] Add gravity sidequest (Fabric)
 - [ ] Dawn Era
-- [ ] Rename "roughin it"
 - [ ] Implement compats
 - [ ] Seed the randomness
 - [ ] Figure out modrinth multiple project scrape
 - [ ] Make the pretty version table
-- [ ] Include hardcore in json
-- [x] Show the scenario names, not just the challenge types
-- [x] Ability to look up mod metadata from a url
-- [x] Get loaders and versions from responses
-- [x] Auto choose the configuration that gets the most mods
-- [x] Cache api calls
-- [x] Validate JSON files when reading them in
-- [x] Remove sidequests when all of their mods have been removed
-- [x] Retrieve and store more CF data
-  - [x] Official name
-  - [x] Friendly url
-  - [x] File Id
-  - [x] Dependencies
-  - [x] Modloader data
-- [ ] Rather than store mod info in memory, just store the name > id lookup.
-  - [ ] Replace direct dict access with a method
-  - [ ] Allow lookup of multiple ids
-  - [ ] Replace guts of method with a cached lookup
-
 
 ### Milestone 1
 **The builder consistently assembles sensible configurations.**
