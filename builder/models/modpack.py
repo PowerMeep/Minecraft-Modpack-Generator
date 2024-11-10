@@ -3,8 +3,8 @@ import random
 
 from models.layer import Layer, ProjectMeta
 from models.sidequest import Sidequest
-from models.scenario import Scenario
-from models.challenge import Challenge
+from models.scenario import Scenario, scenarios_by_name
+from models.challenge import Challenge, challenges_by_name
 from models.project import Project, fetch_projects
 
 logger = logging.getLogger()
@@ -28,8 +28,8 @@ def choice(obj, default):
 
 class ModPack:
     def __init__(self):
-        challenge: Challenge
-        scenario: Scenario
+        self.challenge: Challenge = None
+        self.scenario: Scenario = None
 
         self.layers_by_name = {}
         self.version = None
@@ -51,19 +51,32 @@ class ModPack:
         comb.update(self.sources_by_mod)
         return comb
 
-    def _select_challenge(self):
-        from random import choices
-        from models.challenge import weights_by_challenge
+    def _select_challenge(self,
+                          challenge_name: str = None):
+        if challenge_name:
+            self.challenge = challenges_by_name.get(challenge_name)
 
-        self.challenge = choices(
-            population=list(weights_by_challenge.keys()),
-            weights=list(weights_by_challenge.values()),
-            k=1
-        )[0]
-        logger.info(f'Chose challenge "{self.challenge.name}"')
+        if not self.challenge:
+            from random import choices
+            from models.challenge import weights_by_challenge
 
-    def _select_scenario(self):
-        self.scenario = choice(self.challenge.scenarios, None)
+            self.challenge = choices(
+                population=list(weights_by_challenge.keys()),
+                weights=list(weights_by_challenge.values()),
+                k=1
+            )[0]
+
+        logger.info(f'Selected challenge "{self.challenge.name}"')
+
+    def _select_scenario(self,
+                         scenario_name: str = None):
+        if scenario_name:
+            # FIXME: this could allow an incompatible scenario to be selected
+            self.scenario = scenarios_by_name.get(scenario_name)
+
+        if not self.scenario:
+            self.scenario = choice(self.challenge.scenarios, None)
+
         if self.scenario:
             logger.info(f'> Selected scenario: {self.scenario.name}')
 
@@ -159,7 +172,8 @@ class ModPack:
             logger.info(f'Selected modloader: {self.modloader}')
 
     def _select_sidequests(self,
-                           players: list = None):
+                           sidequest_names: list = None,
+                           player_names: list = None):
         project_ids = set()
         eligible_sidequests = set(self.challenge.sidequests)
         sidequests_by_project_id = {}
@@ -187,29 +201,42 @@ class ModPack:
         sq: Sidequest
         for sq in eligible_sidequests:
             # Skip any per-player sidequests if we don't have at least 2 players
-            if sq.players_upfront and (not players or len(players) < 2):
+            if sq.players_upfront and (not player_names or len(player_names) < 2):
                 continue
 
+            choose_this = False
+            if sidequest_names:
+                if sq.name in sidequest_names:
+                    choose_this = True
             # Flip a coin for whether this one is chosen
-            if bool(random.getrandbits(1)):
+            elif bool(random.getrandbits(1)):
+                if chosen == 3:
+                    break
+                choose_this = True
+
+            if choose_this:
                 chosen += 1
-                sq_meta = sq.generate(players)
+                sq_meta = sq.generate(player_names)
                 self.meta_by_sidequest[sq] = sq_meta
                 for layer in sq.layers:
                     self._add_layer(layer)
                     for project_meta in layer.projects_by_id.values():
                         project = projects_by_id.get(project_meta.cid)
                         self.sources_by_mod[project] = project.get_best_source(self.version)
-                if chosen == 3:
-                    break
 
     def generate(self,
-                 players: list = None):
-        self._select_challenge()
-        self._select_scenario()
+                 challenge_name: str = None,
+                 scenario_name: str = None,
+                 sidequest_names: list = None,
+                 player_names: list = None):
+        self._select_challenge(challenge_name)
+        self._select_scenario(scenario_name)
         self._collect_core_layers()
         self._select_loader_and_version()
-        self._select_sidequests(players)
+        self._select_sidequests(
+            sidequest_names=sidequest_names,
+            player_names=player_names
+        )
 
     def to_json(self) -> dict:
         sq_objs = []
@@ -376,9 +403,16 @@ class ModPack:
         return f'{build_dir}/{output_name}.zip'
 
 
-def generate(players=None) -> ModPack:
+def generate(challenge_name: str = None,
+             scenario_name: str = None,
+             sidequest_names: list = None,
+             player_names: list = None) -> ModPack:
     # TODO: pass in other config and overrides here
-
     modpack = ModPack()
-    modpack.generate(players)
+    modpack.generate(
+        challenge_name=challenge_name,
+        scenario_name=scenario_name,
+        sidequest_names=sidequest_names,
+        player_names=player_names
+    )
     return modpack

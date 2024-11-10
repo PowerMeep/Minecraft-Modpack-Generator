@@ -2,11 +2,15 @@ import logging
 import os
 
 from models.modpack import generate
+from models.challenge import challenges_by_name, Challenge
 
 import disnake
 from disnake.ext import commands
 from disnake import SelectOption, ButtonStyle, Embed
 from disnake.ui import StringSelect, ActionRow, Button
+
+from models.scenario import Scenario
+from models.sidequest import Sidequest
 
 logger = logging.getLogger()
 intents = disnake.Intents.default()
@@ -14,6 +18,10 @@ intents.members = True
 client = commands.InteractionBot(intents=intents)
 
 id_member_select = 'member-select'
+id_challenge_select = 'challenge-select'
+id_scenario_select = 'scenario-select'
+id_sidequest_select = 'sidequest-select'
+id_back = 'back'
 id_do_generate = 'build-modpack'
 id_send_it = 'send-it'
 
@@ -31,6 +39,11 @@ btn_send_it = Button(
     style=ButtonStyle.blurple,
     label='Send It',
     custom_id=id_send_it
+)
+btn_back = Button(
+    style=ButtonStyle.gray,
+    label='< Back',
+    custom_id=id_back
 )
 btn_report = Button(
     style=ButtonStyle.url,
@@ -54,6 +67,10 @@ class BuilderState:
         self.author = author
         self.members_by_id = {}
         self.selected_members_by_name = {}
+        self.selected_challenge_name = None
+        self.selected_scenario_name = None
+        self.selected_sidequest_names = []
+
         self.modpack = None
         self.message: disnake.Message = None
 
@@ -96,6 +113,121 @@ class BuilderState:
 
 states_by_user = {}
 
+async def get_challenge_select(inter,
+                               state: BuilderState):
+    options = [
+        SelectOption(
+            label='(Random Challenge)',
+            value='_',
+            default=state.selected_challenge_name is None
+        )
+    ]
+    for name, challenge in challenges_by_name.items():
+        options.append(
+            SelectOption(
+                label=name,
+                # description=challenge.description,
+                value=name,
+                default=state.selected_challenge_name == name
+            )
+        )
+    return StringSelect(
+        placeholder='Available Challenges',
+        custom_id=id_challenge_select,
+        min_values=0,
+        max_values=1,
+        options=options
+    )
+
+async def get_scenario_select(inter,
+                               state: BuilderState):
+    if not state.selected_challenge_name:
+        return None
+
+    challenge: Challenge = challenges_by_name.get(state.selected_challenge_name)
+    if not challenge.scenarios:
+        return None
+
+    options = [
+        SelectOption(
+            label='(Random Scenario)',
+            value='_',
+            default=state.selected_scenario_name is None
+        )
+    ]
+    scenario: Scenario
+    for scenario in challenge.scenarios:
+        options.append(
+            SelectOption(
+                label=scenario.name,
+                # description=scenario.description,
+                value=scenario.name,
+                default=scenario.name == state.selected_scenario_name
+            )
+        )
+    return StringSelect(
+        placeholder='Available Scenarios',
+        custom_id=id_scenario_select,
+        min_values=0,
+        max_values=1,
+        options=options
+    )
+
+async def get_sidequest_select(inter,
+                               state: BuilderState):
+    if not state.selected_challenge_name:
+        return None
+
+    challenge: Challenge = challenges_by_name.get(state.selected_challenge_name)
+    if not challenge.sidequests:
+        return None
+
+    options = []
+    sidequest: Sidequest
+    for sidequest in challenge.sidequests:
+        options.append(
+            SelectOption(
+                label=sidequest.name,
+                # description=sidequest.description,
+                value=sidequest.name,
+                default=sidequest.name in state.selected_sidequest_names
+            )
+        )
+    return StringSelect(
+        placeholder='Available Sidequests',
+        custom_id=id_sidequest_select,
+        min_values=0,
+        max_values=3,
+        options=options
+    )
+
+async def get_player_select(inter,
+                            state: BuilderState) -> StringSelect:
+    try:
+        members = inter.guild.fetch_members(limit=25)
+        # An error should be thrown here if we weren't able to retrieve any members.
+        options = []
+        async for member in members:
+            if member.id == client.user.id:
+                continue
+            state.members_by_id[str(member.id)] = member
+            options.append(
+                SelectOption(
+                    label=member.display_name,
+                    value=str(member.id),
+                    default=member.display_name in state.selected_members_by_name
+                )
+            )
+        return StringSelect(
+            placeholder='Participating members',
+            custom_id=id_member_select,
+            min_values=0,
+            max_values=len(options),
+            options=options
+        )
+    except:
+        return None
+
 
 @client.slash_command(
     description='Generate a Minecraft Modpack'
@@ -116,11 +248,7 @@ async def build_modpack(inter):
     state = BuilderState(inter.author)
     states_by_user[inter.author.id] = state
 
-    try:
-        await show_player_prompt(inter, state)
-    except:
-        # If we couldn't get the player list and show the prompt, just skip right to generating.
-        await regenerate(inter, state)
+    await show_pregen_menu(inter, state)
 
 
 @client.listen('on_button_click')
@@ -144,6 +272,9 @@ async def on_button_click(inter: disnake.MessageInteraction):
     elif inter.component.custom_id == id_send_it:
         await send(inter, state)
         return
+    elif inter.component.custom_id == id_back:
+        await show_pregen_menu(inter, state)
+        return
 
     await inter.response.send_message(
         content='oops'
@@ -164,50 +295,72 @@ async def on_dropdown(inter: disnake.MessageInteraction):
             ephemeral=True
         )
         return
-    for pid in inter.resolved_values:
-        member = state.members_by_id.get(pid)
-        state.selected_members_by_name[member.display_name] = member
-    await regenerate(inter, state)
+
+    if inter.component.custom_id == id_challenge_select:
+        new_challenge = inter.resolved_values[0]
+        if new_challenge == '_':
+            new_challenge = None
+        if state.selected_challenge_name != new_challenge:
+            state.selected_challenge_name = new_challenge
+            state.selected_scenario_name = None
+            state.selected_sidequest_names = []
+
+    elif inter.component.custom_id == id_scenario_select:
+        new_scenario = inter.resolved_values[0]
+        if new_scenario == '_':
+            new_scenario = None
+
+        state.selected_scenario_name = new_scenario
+
+    elif inter.component.custom_id == id_sidequest_select:
+        state.selected_sidequest_names = list(inter.resolved_values) if inter.resolved_values else []
+
+    elif inter.component.custom_id == id_member_select:
+        state.selected_members_by_name.clear()
+        if inter.resolved_values:
+            for pid in inter.resolved_values:
+                member = state.members_by_id.get(pid)
+                state.selected_members_by_name[member.display_name] = member
+
+    await show_pregen_menu(inter, state)
 
 
-async def show_player_prompt(inter: disnake.ApplicationCommandInteraction,
-                             state: BuilderState):
-    members = inter.guild.fetch_members(limit=25)
-    # An error should be thrown here if we weren't able to retrieve any members.
+async def show_pregen_menu(inter,
+                           state: BuilderState):
 
-    options = []
-    async for member in members:
-        if member.id == client.user.id:
-            continue
-        state.members_by_id[str(member.id)] = member
-        options.append(
-            SelectOption(
-                label=member.display_name,
-                value=str(member.id)
-            )
-        )
+    components = [await get_challenge_select(inter, state)]
 
-    components = [
-        StringSelect(
-            placeholder='Participating members',
-            custom_id=id_member_select,
-            min_values=0,
-            max_values=len(options),
-            options=options
-        ),
-        ActionRow(btn_generate, btn_report)
-    ]
+    if scenarios := await get_scenario_select(inter, state):
+        components.append(scenarios)
 
+    if sidequests := await get_sidequest_select(inter, state):
+        components.append(sidequests)
+
+    if players := await get_player_select(inter, state):
+        components.append(players)
+
+    components.append(ActionRow(btn_generate, btn_report))
     embed = Embed(
         title='Build Modpack',
         description=(
-            '**Select any players that will be joining.**\n\n'
             '_Please be patient. Building can take a while._'
         )
     )
     add_author(embed, inter.author)
+    if state.message:
+        # If this interaction has already been responded to
+        try:
+            await inter.delete_original_response()
+        except:
+            pass
 
-    state.message = await inter.edit_original_response(
+        await state.message.edit(
+            embed=embed,
+            components=components
+        )
+    else:
+        # If this interaction has been deferred, but not responded to
+        state.message = await inter.edit_original_response(
         embed=embed,
         components=components
     )
@@ -216,8 +369,13 @@ async def show_player_prompt(inter: disnake.ApplicationCommandInteraction,
 async def regenerate(inter: disnake.MessageInteraction,
                      state: BuilderState):
     logger.info(f'{inter.author.display_name} is generating a modpack')
-    state.modpack = generate(list(state.selected_members_by_name.keys()))
-    components = ActionRow(btn_regenerate, btn_send_it, btn_report)
+    state.modpack = generate(
+        challenge_name=state.selected_challenge_name,
+        scenario_name=state.selected_scenario_name,
+        sidequest_names=state.selected_sidequest_names,
+        player_names=list(state.selected_members_by_name.keys())
+    )
+    components = ActionRow(btn_back, btn_regenerate, btn_send_it, btn_report)
 
     if state.message:
         # If this interaction has already been responded to
