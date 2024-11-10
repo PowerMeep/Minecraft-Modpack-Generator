@@ -314,10 +314,13 @@ def fetch_projects(cids) -> dict:
                     projects_by_id[cid] = project
                     all_ids.remove(cid)
 
+                author_names = [a.get('name') for a in info_data.get('authors')]
+
                 # Set the metadata
                 project.curseforge_meta = CFMetadata(
-                    display_name = info_data.get('name'),
-                    website_url = info_data.get('links').get('websiteUrl')
+                    display_name=info_data.get('name'),
+                    website_url=info_data.get('links').get('websiteUrl'),
+                    author=', '.join(author_names)
                 )
                 project.fetch_sources()
                 project.save_sources()
