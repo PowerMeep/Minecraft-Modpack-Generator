@@ -28,6 +28,7 @@ def choice(obj, default):
 
 class ModPack:
     def __init__(self):
+        self.name = None
         self.challenge: Challenge = None
         self.scenario: Scenario = None
 
@@ -42,11 +43,6 @@ class ModPack:
         self.sources_by_dep = {}
         self.meta_by_sidequest = {}
         self.compats = []
-
-    def get_name(self):
-        if self.scenario:
-            return f'{self.challenge.name} - {self.scenario.name}'
-        return self.challenge.name
 
     def get_combined_mods(self):
         comb = {}
@@ -70,6 +66,7 @@ class ModPack:
                 k=1
             )[0]
 
+        self.name = self.challenge.name
         logger.info(f'Selected challenge "{self.challenge.name}"')
 
     def _select_scenario(self,
@@ -82,6 +79,7 @@ class ModPack:
             self.scenario = choice(self.challenge.scenarios, None)
 
         if self.scenario:
+            self.name = f'{self.name} - {self.scenario.name}'
             logger.info(f'> Selected scenario: {self.scenario.name}')
 
     def _add_layer(self,
@@ -152,6 +150,10 @@ class ModPack:
             if best is None or best[1] < score:
                 best = version, score
 
+        if best is None:
+            logger.warning('Unable to determine a best version.')
+            return
+
         self.version = best[0]
         logger.info(f'Selected minecraft version {self.version}')
 
@@ -166,6 +168,10 @@ class ModPack:
         project_ids = set()
         layers_by_project_id = {}
         layer: Layer
+        if not self.version:
+            logger.error('Unable to collect sources without a set version.')
+            return
+
         for layer in self.layers_by_name.values():
             project_meta: ProjectMeta
             for project_meta in layer.projects_by_id.values():
@@ -281,7 +287,7 @@ class ModPack:
             mod_objs.append(mod_obj)
 
         return {
-            'name': self.get_name(),
+            'name': self.name,
             'challenge': self.challenge.to_json(),
             'scenario': self.scenario.to_json(),
             'version': self.version,
@@ -376,7 +382,7 @@ class ModPack:
             },
             'manifestType': 'minecraftModpack',
             'manifestVersion': 1,
-            'name': self.challenge.name,
+            'name': self.name,
             'version': 1,
             'author': 'buildbot',
             'files': files,
@@ -413,13 +419,17 @@ class ModPack:
         self.pull_dependencies()
         self.apply_compats()
 
+        if len(self.sources_by_mod) == 0:
+            logger.warning('Not generating a pack with no mods')
+            return None
+
         # create temp directory
         temp_dir = 'temp'
         build_dir = 'build'
         os.makedirs(temp_dir, 0o755, exist_ok=True)
 
         # create build directories
-        output_name = f'{round(time.time() * 1000)}-{self.get_name()}-client'
+        output_name = f'{round(time.time() * 1000)}-{self.name}-client'
         temp_output_dir = f'{temp_dir}/{output_name}'
         temp_output_overrides_dir = f'{temp_output_dir}/overrides'
         os.makedirs(temp_output_dir, 0o755,  False)
