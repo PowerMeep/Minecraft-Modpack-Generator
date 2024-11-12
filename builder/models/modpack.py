@@ -17,6 +17,14 @@ rt_tool = 4
 rt_incompatible = 5
 rt_include = 6
 
+score_base_scenario = 5
+score_base_scenario_terrain = 2
+score_base_scenario_village = 2
+score_base_challenge = 1
+score_base_challenge_terrain = 1
+score_base_challenge_village = 1
+score_multiplier_required = 10
+
 
 def choice(obj, default):
     if type(obj) is list and len(obj) > 0:
@@ -35,7 +43,7 @@ class ModPack:
         self.villages = None
         self.terrain = None
 
-        self.layers_by_name = {}
+        self.weight_by_layer = {}
         self.version = None
         self.modloader = None
 
@@ -83,50 +91,59 @@ class ModPack:
             logger.info(f'> Selected scenario: {self.scenario.name}')
 
     def _add_layer(self,
-                   layer: Layer):
+                   layer: Layer,
+                   weight: int = 1):
         logger.info(f'> Adding layer: {layer.name}')
-        self.layers_by_name[layer.name] = layer
+        self.weight_by_layer[layer] = weight
 
     def _collect_scenario_layers(self):
+        if not self.scenario:
+            return
+
         terrains = set()
         villages = set()
 
         layer: Layer
         for layer in self.scenario.layers:
-            self._add_layer(layer)
+            self._add_layer(layer, score_base_scenario)
         for layer in self.scenario.terrain:
             terrains.add(layer)
         for layer in self.scenario.villages:
             villages.add(layer)
         if not self.villages:
             self.villages = choice(list(villages), None)
+            self._add_layer(self.villages, score_base_scenario_village)
         if not self.terrain:
             self.terrain = choice(list(terrains), None)
-
+            self._add_layer(self.terrain, score_base_scenario_terrain)
 
     def _collect_challenge_layers(self):
         terrains = set()
         villages = set()
         layer: Layer
         for layer in self.challenge.layers:
-            self._add_layer(layer)
+            self._add_layer(layer, score_base_challenge)
         for layer in self.challenge.terrain:
             terrains.add(layer)
         for layer in self.challenge.villages:
             villages.add(layer)
         if not self.villages:
             self.villages = choice(list(villages), None)
+            self._add_layer(self.villages, score_base_challenge_village)
         if not self.terrain:
             self.terrain = choice(list(terrains), None)
+            self._add_layer(self.terrain, score_base_challenge_terrain)
 
     def _select_loader_and_version(self):
         project_ids = set()
+        layers_by_project_id = {}
         layer: Layer
-        for layer in self.layers_by_name.values():
+        for layer, weight in self.weight_by_layer.items():
             project_meta: ProjectMeta
             for project_meta in layer.projects_by_id.values():
                 if project_meta.required:
                     project_ids.add(project_meta.cid)
+                    layers_by_project_id.setdefault(project_meta.cid, []).append(layer)
 
         # Fetch the project data
         projects_by_id = fetch_projects(list(project_ids))
@@ -143,10 +160,20 @@ class ModPack:
 
         # Select the best version
         best = None
+        scores_by_version = {}
         for version, projects in projects_by_version.items():
-            # TODO: Expand this to prioritize some mods over others.
-            #       For now, the score is just the number of mods supported.
-            score = len(projects)
+            score = 0
+            # For each project, look at the layers that define it
+            # For each layer that requires it, increase the score
+            for project in projects:
+                cid = project.curseforge_id
+                layers = layers_by_project_id.get(cid)
+                for layer in layers:
+                    multiplier = score_multiplier_required if layer.projects_by_id.get(cid).required else 1
+                    score += self.weight_by_layer[layer] * multiplier
+
+            scores_by_version[version] = score
+            # The "best" version should have the highest score
             if best is None or best[1] < score:
                 best = version, score
 
@@ -155,8 +182,7 @@ class ModPack:
             return
 
         self.version = best[0]
-        logger.info(f'Selected minecraft version {self.version}')
-
+        logger.info(f'Selected minecraft version {self.version}; score: {best[1]}')
         from apis import curseforge
         self.modloader = curseforge.get_recommended_modloader(self.version)
         if not self.modloader:
@@ -172,7 +198,7 @@ class ModPack:
             logger.error('Unable to collect sources without a set version.')
             return
 
-        for layer in self.layers_by_name.values():
+        for layer in self.weight_by_layer:
             project_meta: ProjectMeta
             for project_meta in layer.projects_by_id.values():
                 project_ids.add(project_meta.cid)
@@ -185,11 +211,13 @@ class ModPack:
                 layer: Layer
                 for layer in layers_by_project_id.get(cid):
                     if layer.projects_by_id.get(cid).required:
-                        del(self.layers_by_name[layer.name])
-                        logger.info(f'Dropping incompatible layer: {project.curseforge_id}')
+                        del(self.weight_by_layer[layer])
+                        logger.info(f'Dropping incompatible layer: {layer.name}')
+                    else:
+                        logger.info(f'Dropping incompatible project: {project.curseforge_id}')
 
         # For any remaining layers, add the mod sources
-        for layer in self.layers_by_name.values():
+        for layer in self.weight_by_layer:
             for cid in layer.projects_by_id.keys():
                 project = projects_by_id.get(cid)
                 source = project.get_best_source(self.version)
@@ -255,15 +283,9 @@ class ModPack:
                  player_names: list = None):
         self._select_challenge(challenge_name)
         self._select_scenario(scenario_name)
-        if self.scenario:
-            # If a scenario is present, select the loader based on that.
-            self._collect_scenario_layers()
-            self._select_loader_and_version()
-
+        self._collect_scenario_layers()
         self._collect_challenge_layers()
-        if not self.version:
-            self._select_loader_and_version()
-
+        self._select_loader_and_version()
         self._collect_sources()
         self._select_sidequests(
             sidequest_names=sidequest_names,
@@ -451,7 +473,7 @@ class ModPack:
         for project in self.sources_by_mod.keys():
             projects_by_id[project.curseforge_id] = project
 
-        for layer in self.layers_by_name.values():
+        for layer in self.weight_by_layer:
             for cid, project_meta in layer.projects_by_id.items():
                 if cid not in projects_by_id:
                     continue

@@ -36,7 +36,6 @@ These just serve to create better integration between other things that are pres
 - Figure out modrinth multiple project scrape
 - Test ALL layers to make sure they work independently
   - Implement some method of creating a modpack with arbitrary layers
-- Scrutinize layers for which mods are really "required"
 - Rather than challenges also having terrain and villages, use one-off scenarios with no names? Less duplicate code.
 
 ### Milestone 1

@@ -76,7 +76,7 @@ class BuilderState:
 
     def to_embed(self):
         desc = [
-            f'# {self.modpack.get_name()}',
+            f'# {self.modpack.name}',
             self.modpack.challenge.description
         ]
         if self.modpack.scenario:

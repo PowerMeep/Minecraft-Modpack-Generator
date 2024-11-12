@@ -100,11 +100,13 @@
       },
       {
         "project_id": 363703,
-        "project_name": "Goblin Traders"
+        "project_name": "Goblin Traders",
+        "required": false
       },
       {
         "project_id": 535096,
-        "project_name": "Goblins & Dungeons"
+        "project_name": "Goblins & Dungeons",
+        "required": false
       }
     ]
   },
@@ -122,35 +124,38 @@
     "projects": [
       {
         "project_id": 353942,
-        "project_name": "Snow Under Trees"
+        "project_name": "Snow Under Trees",
+        "required": false
       },
       {
         "project_id": 308663,
-        "project_name": "Snow! Real Magic!"
+        "project_name": "Snow! Real Magic!",
+        "required": false
       },
       {
         "project_id": 344436,
-        "project_name": "Snowballs Freeze Mobs"
+        "project_name": "Snowballs Freeze Mobs",
+        "required": false
       },
       {
         "project_id": 566142,
-        "project_name": "Snowy Spirit"
+        "project_name": "Snowy Spirit",
+        "required": false
       },
       {
         "project_id": 373774,
-        "project_name": "Rare Ice"
-      },
-      {
-        "project_id": 566142,
-        "project_name": "Snowy Spirit"
+        "project_name": "Rare Ice",
+        "required": false
       },
       {
         "project_id": 811803,
-        "project_name": "Spawn Animations"
+        "project_name": "Spawn Animations",
+        "required": false
       },
       {
         "project_id": 469185,
-        "project_name": "Raven Coffee"
+        "project_name": "Raven Coffee",
+        "required": false
       },
       {
         "project_id": 393321,
@@ -211,17 +216,12 @@
     ]
   },
   {
-    "name": "aquaculture",
+    "name": "oceanic",
     "projects": [
       {
         "project_id": 60028,
         "project_name": "Aquaculture 2"
-      }
-    ]
-  },
-  {
-    "name": "oceanic",
-    "projects": [
+      },
       {
         "project_id": 536254,
         "project_name": "Aquamirae"
@@ -249,7 +249,8 @@
       },
       {
         "project_id": 242830,
-        "project_name": "Exotic Birds"
+        "project_name": "Exotic Birds",
+        "required": false
       },
       {
         "project_id": 339184,
@@ -262,6 +263,11 @@
       {
         "project_id": 398521,
         "project_name": "Farmer's Delight"
+      },
+      {
+        "project_id": 60028,
+        "project_name": "Aquaculture 2",
+        "required": false
       },
       {
         "project_id": 233258,
@@ -296,6 +302,11 @@
         "required": false
       },
       {
+        "project_id": 60028,
+        "project_name": "Aquaculture 2",
+        "required": false
+      },
+      {
         "project_id": 233258,
         "project_name": "Bad Mobs",
         "overrides": {
@@ -313,11 +324,13 @@
       },
       {
         "project_id": 309516,
-        "project_name": "Bountiful"
+        "project_name": "Bountiful",
+        "required": false
       },
       {
         "project_id": 347381,
-        "project_name": "Village Spawn Point"
+        "project_name": "Village Spawn Point",
+        "required": false
       },
       {
         "project_id": 452299,
@@ -325,11 +338,13 @@
       },
       {
         "project_id": 245755,
-        "project_name": "Waystones"
+        "project_name": "Waystones",
+        "required": false
       },
       {
         "project_id": 254268,
-        "project_name": "Torchmaster"
+        "project_name": "Torchmaster",
+        "required": false
       }
     ]
   },
@@ -338,7 +353,8 @@
     "projects": [
       {
         "project_id": 391390,
-        "project_name": "Identity"
+        "project_name": "Identity",
+        "required": false
       },
       {
         "project_id": 377858,
@@ -376,7 +392,8 @@
       },
       {
         "project_id": 310383,
-        "project_name": "Armor Underwear"
+        "project_name": "Armor Underwear",
+        "required": false
       }
     ]
   },
@@ -402,15 +419,18 @@
     "projects": [
       {
         "project_id": 538214,
-        "project_name": "Handcrafted"
+        "project_name": "Handcrafted",
+        "required": false
       },
       {
         "project_id": 362528,
-        "project_name": "Decorative Blocks"
+        "project_name": "Decorative Blocks",
+        "required": false
       },
       {
         "project_id": 412082,
-        "project_name": "Supplementaries"
+        "project_name": "Supplementaries",
+        "required": false
       }
     ]
   },

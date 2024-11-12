@@ -167,7 +167,6 @@
     ],
     "layers": [
       "weather",
-      "aquaculture",
       "natural"
     ]
   },
@@ -196,7 +195,6 @@
     "layers": [
       "ships",
       "weather",
-      "aquaculture",
       "oceanic"
     ]
   },
