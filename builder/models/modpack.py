@@ -93,6 +93,10 @@ class ModPack:
     def _add_layer(self,
                    layer: Layer,
                    weight: int = 1):
+        if layer is None:
+            # FIXME: where are the null layers coming from?
+            logger.error('> Blocked adding null layer')
+            return
         logger.info(f'> Adding layer: {layer.name}')
         self.weight_by_layer[layer] = weight
 

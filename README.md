@@ -38,10 +38,10 @@ These just serve to create better integration between other things that are pres
   - Implement some method of creating a modpack with arbitrary layers
 - Rather than challenges also having terrain and villages, use one-off scenarios with no names? Less duplicate code.
 
-### Milestone 1
+### Milestone 1 (Proof of Concept)
 **The builder consistently assembles sensible configurations.**
 
-### Milestone 2
+### Milestone 2 (Description and Interaction)
 **The builder describes the configuration in the Discord server.**
 - [x] REST API
   - [x] Pass in players
@@ -55,8 +55,10 @@ These just serve to create better integration between other things that are pres
   - [x] Discord post uses better links
   - [x] Other configs
 - [ ] A short description (< 100 chars) for Discord dropdowns
+- [ ] REST api is a separate application that can be replicated
+- [ ] Generated thumbnails
 
-### Milestone 3
+### Milestone 3 (Creating a Pack and Making it Available to Download)
 **The builder is able to assemble zip files that can be imported by clients.**
 - [x] Ability to choose a loader and minecraft version
 - [x] Ability to choose a version for the loader
@@ -70,13 +72,12 @@ These just serve to create better integration between other things that are pres
   - Is this necessary?
   - Every page refresh would have to generate a zip and attach a link to it
 - [ ] Delete old files from temp and build
-- [ ] Generated thumbnails
+- [ ] Some kind of local "registry" to copy already-downloaded files from
 
-### Milestone 4
+### Milestone 4 (Automated Hosting)
 **The builder is able to automatically start a Minecraft server.**
 - [ ] Overrides for server.properties file
   - [ ] Hardcore
   - [ ] Generate structures
-- [ ] Some kind of local "registry" to copy already-downloaded files from
 - [ ] Ability to generate a Docker Compose for the itzg image
 - [ ] Ability to create / stop / restart / destroy images using that compose
